@@ -382,7 +382,7 @@ export default async function Home() {
               </div>
               <h3 className="text-xl font-medium text-[#0f172a]">Безплатна доставка</h3>
               <p className="text-gray-500 text-center">
-               Насладете се на безплатна и бърза доставка за всички поръчки над $50 в цялата страна.
+               Насладете се на безплатна и бърза доставка за всички поръчки над 75 лева в цялата страна.
               </p>
             </div>
 

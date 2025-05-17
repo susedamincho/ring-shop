@@ -24,7 +24,7 @@ export default function ShippingPolicyPage() {
             <Truck className="h-12 w-12 text-primary mb-4" />
             <h2 className="text-xl font-bold mb-2">Безплатна доставка</h2>
             <p className="text-muted-foreground">
-              Безплатна стандартна доставка за всички поръчки над $75 в рамките на континенталните САЩ.
+              Безплатна стандартна доставка за всички поръчки над 75 лева в рамките на България.
             </p>
           </div>
           <div className="bg-muted rounded-xl p-6 flex flex-col items-center text-center">

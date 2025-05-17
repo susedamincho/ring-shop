@@ -10,8 +10,8 @@ import { Input } from "@/components/ui/input"
 
 export default function Footer() {
   const [storeInfo, setStoreInfo] = useState({
-    storeName: "PhoneStore",
-    storeEmail: "support@phonestore.com",
+    storeName: "RingShop",
+    storeEmail: "support@RingShop.com",
     storePhone: "1-800-123-4567",
     storeAddress: "123 Tech Street, Digital City, DC 10001",
   })
@@ -38,8 +38,8 @@ export default function Footer() {
 
         if (settings) {
           setStoreInfo({
-            storeName: settings.storeName || "PhoneStore",
-            storeEmail: settings.storeEmail || "support@phonestore.com",
+            storeName: settings.storeName || "RingShop",
+            storeEmail: settings.storeEmail || "support@RingShop.com",
             storePhone: settings.storePhone || "1-800-123-4567",
             storeAddress: settings.storeAddress || "123 Tech Street, Digital City, DC 10001",
           })

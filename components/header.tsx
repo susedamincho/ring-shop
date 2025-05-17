@@ -65,7 +65,7 @@ export default function Header() {
     const defaults: NavItem[] = [
       { label: "Нови телефони", href: "/products?condition=New" },
       { label: "Реновирани", href: "/products?condition=Refurbished,Like%20New,Excellent,Good" },
-      { label: "Аксесоари", href: "/categories" },
+      { label: "Категории", href: "/categories" },
       { label: "Промоции", href: "/products?onSale=true" },
     ]
     if (isLoading || error) return defaults
