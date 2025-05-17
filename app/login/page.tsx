@@ -1,7 +1,8 @@
+// файл: LoginPage.tsx
+
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -30,19 +31,18 @@ export default function LoginPage() {
 
   const validateForm = () => {
     if (!email.trim()) {
-      setError("Email is required")
+      setError("Имейлът е задължителен")
       return false
     }
 
     if (!password) {
-      setError("Password is required")
+      setError("Паролата е задължителна")
       return false
     }
 
-    // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
-      setError("Please enter a valid email address")
+      setError("Моля, въведете валиден имейл адрес")
       return false
     }
 
@@ -52,16 +52,11 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
-
     if (!validateForm()) return
-
     setLoading(true)
-
     try {
       await signIn(email, password)
-      // Redirect is handled in the auth provider
     } catch (error) {
-      // Error is handled in the auth provider
       setLoading(false)
     }
   }
@@ -69,34 +64,29 @@ export default function LoginPage() {
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
-
     if (!resetEmail.trim()) {
-      setError("Email is required")
+      setError("Имейлът е задължителен")
       return
     }
 
-    // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(resetEmail)) {
-      setError("Please enter a valid email address")
+      setError("Моля, въведете валиден имейл адрес")
       return
     }
 
     setLoading(true)
-
     try {
       await resetPassword(resetEmail)
       setResetSent(true)
       setLoading(false)
     } catch (error) {
-      // Error is handled in the auth provider
       setLoading(false)
     }
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0f172a] to-[#1e293b] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 rounded-full bg-teal-500/10 blur-3xl"></div>
         <div className="absolute top-1/2 left-0 w-96 h-96 rounded-full bg-teal-600/5 blur-3xl"></div>
@@ -111,15 +101,15 @@ export default function LoginPage() {
                 <LogIn className="h-6 w-6 text-white" />
               </div>
             </div>
-            <h2 className="text-3xl font-extrabold text-white tracking-tight">Welcome Back</h2>
-            <p className="mt-2 text-gray-400">Sign in to your account to continue</p>
+            <h2 className="text-3xl font-extrabold text-white tracking-tight">Добре дошли отново</h2>
+            <p className="mt-2 text-gray-400">Влезте в акаунта си, за да продължите</p>
           </Link>
         </div>
 
         <Card className="bg-[#1e293b]/80 backdrop-blur-sm border-gray-800 shadow-2xl">
           <CardHeader className="space-y-1 pb-4">
-            <CardTitle className="text-2xl font-bold text-white">Sign In</CardTitle>
-            <CardDescription className="text-gray-400">Enter your credentials to access your account</CardDescription>
+            <CardTitle className="text-2xl font-bold text-white">Вход</CardTitle>
+            <CardDescription className="text-gray-400">Въведете вашите данни за достъп до акаунта</CardDescription>
           </CardHeader>
 
           {error && (
@@ -134,15 +124,13 @@ export default function LoginPage() {
             <form onSubmit={handleSubmit}>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-gray-300">
-                    Email
-                  </Label>
+                  <Label htmlFor="email" className="text-gray-300">Имейл</Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 h-4 w-4" />
                     <Input
                       id="email"
                       type="email"
-                      placeholder="name@example.com"
+                      placeholder="ime@primer.bg"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
@@ -153,9 +141,7 @@ export default function LoginPage() {
                 </div>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="password" className="text-gray-300">
-                      Password
-                    </Label>
+                    <Label htmlFor="password" className="text-gray-300">Парола</Label>
                     <Button
                       variant="link"
                       className="p-0 h-auto text-sm text-teal-400 hover:text-teal-300"
@@ -165,7 +151,7 @@ export default function LoginPage() {
                         setResetEmail(email)
                       }}
                     >
-                      Forgot password?
+                      Забравена парола?
                     </Button>
                   </div>
                   <div className="relative">
@@ -188,7 +174,7 @@ export default function LoginPage() {
                       disabled={loading}
                     >
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      <span className="sr-only">{showPassword ? "Hide password" : "Show password"}</span>
+                      <span className="sr-only">{showPassword ? "Скрий паролата" : "Покажи паролата"}</span>
                     </Button>
                   </div>
                 </div>
@@ -205,11 +191,11 @@ export default function LoginPage() {
                       Вписване...
                     </>
                   ) : (
-                    "Sign In"
+                    "Вход"
                   )}
                 </Button>
                 <div className="mt-6 text-center text-sm text-gray-400">
-                   Нямате акаунт?{" "}
+                  Нямате акаунт?{" "}
                   <Link href="/register" className="text-teal-400 hover:text-teal-300 font-medium">
                     Създайте акаунт
                   </Link>
@@ -225,7 +211,7 @@ export default function LoginPage() {
                       <Mail className="h-8 w-8 text-teal-400" />
                     </div>
                     <p className="text-teal-400 mb-4 font-medium">
-                     Изпратен имейл за нулиране на парола! Проверете входящата си кутия за допълнителни инструкции.
+                      Изпратихме ви имейл за възстановяване на парола! Проверете пощата си.
                     </p>
                     <Button
                       type="button"
@@ -242,15 +228,13 @@ export default function LoginPage() {
                 ) : (
                   <>
                     <div className="space-y-2">
-                      <Label htmlFor="resetEmail" className="text-gray-300">
-                       Имейл
-                      </Label>
+                      <Label htmlFor="resetEmail" className="text-gray-300">Имейл</Label>
                       <div className="relative">
                         <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 h-4 w-4" />
                         <Input
                           id="resetEmail"
                           type="email"
-                          placeholder="name@example.com"
+                          placeholder="ime@primer.bg"
                           value={resetEmail}
                           onChange={(e) => setResetEmail(e.target.value)}
                           required
@@ -268,7 +252,7 @@ export default function LoginPage() {
                         disabled={loading}
                         className="flex-1 border-gray-700 text-gray-300 hover:bg-gray-800 hover:text-white"
                       >
-                        Cancel
+                        Отказ
                       </Button>
                       <Button
                         type="submit"
@@ -281,7 +265,7 @@ export default function LoginPage() {
                             Изпращане...
                           </>
                         ) : (
-                          "Send Reset Link"
+                          "Изпрати връзка"
                         )}
                       </Button>
                     </div>

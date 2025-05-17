@@ -1,3 +1,5 @@
+// Файл: ProductForm.tsx
+
 "use client"
 
 import { useState, useEffect } from "react"
@@ -74,7 +76,7 @@ export default function ProductForm({ productId = null }: { productId?: string |
     accessories: [],
     additionalImages: [],
     rating: 0,
-    image: DEFAULT_PLACEHOLDER_IMAGE, // Default image URL
+    image: DEFAULT_PLACEHOLDER_IMAGE,
     discount: 0,
   })
   const [imageUrl, setImageUrl] = useState("")
@@ -84,7 +86,6 @@ export default function ProductForm({ productId = null }: { productId?: string |
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch all necessary data in parallel
         const [
           fetchedCategories,
           fetchedBrands,
@@ -110,7 +111,6 @@ export default function ProductForm({ productId = null }: { productId?: string |
         setCarriers(fetchedCarriers)
         setColors(fetchedColors)
 
-        // If editing, populate form with product data
         if (productData) {
           setFormData({
             name: productData.name || "",
@@ -137,10 +137,10 @@ export default function ProductForm({ productId = null }: { productId?: string |
           setImageUrl(productData.image || "")
         }
       } catch (error) {
-        console.error("Error fetching data:", error)
+        console.error("Грешка при зареждане на данните:", error)
         toast({
-          title: "Error",
-          description: "Failed to load data. Please try again.",
+          title: "Грешка",
+          description: "Неуспешно зареждане на данните. Моля, опитайте отново.",
           variant: "destructive",
         })
       } finally {
@@ -234,24 +234,24 @@ export default function ProductForm({ productId = null }: { productId?: string |
       if (productId) {
         await updateProduct(productId, productData, imageUrl)
         toast({
-          title: "Product updated",
-          description: "The phone has been updated successfully.",
+          title: "Продуктът е обновен",
+          description: "Телефонът беше успешно обновен.",
         })
       } else {
         await addProduct(productData, imageUrl)
         toast({
-          title: "Product added",
-          description: "The new phone has been added successfully.",
+          title: "Продуктът е добавен",
+          description: "Новият телефон беше успешно добавен.",
         })
       }
 
       router.push("/admin/products")
     } catch (error: any) {
-      console.error("Error saving product:", error)
-      setError(error.message || "Failed to save product. Please try again.")
+      console.error("Грешка при записване на продукта:", error)
+      setError(error.message || "Неуспешен запис. Опитайте отново.")
       toast({
-        title: "Error",
-        description: "Failed to save product. Please try again.",
+        title: "Грешка",
+        description: "Неуспешен запис. Опитайте отново.",
         variant: "destructive",
       })
     } finally {
@@ -270,27 +270,27 @@ export default function ProductForm({ productId = null }: { productId?: string |
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{productId ? "Edit Phone" : "Add New Phone"}</CardTitle>
+        <CardTitle>{productId ? "Редактиране на телефон" : "Добави нов телефон"}</CardTitle>
         <CardDescription>
-          {productId ? "Update the phone details below." : "Fill in the details to list a new phone."}
+          {productId ? "Обнови детайлите на телефона по-долу." : "Попълни детайлите за новия телефон."}
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-6">
           {error && (
             <Alert variant="destructive">
-              <AlertTitle>Error</AlertTitle>
+              <AlertTitle>Грешка</AlertTitle>
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="name">Phone Name</Label>
+            <Label htmlFor="name">Име на телефона</Label>
             <Input id="name" name="name" value={formData.name} onChange={handleInputChange} required />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">Описание</Label>
             <Textarea
               id="description"
               name="description"
@@ -303,7 +303,7 @@ export default function ProductForm({ productId = null }: { productId?: string |
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="price">Price ($)</Label>
+              <Label htmlFor="price">Цена (лв)</Label>
               <Input
                 id="price"
                 name="price"
@@ -316,7 +316,7 @@ export default function ProductForm({ productId = null }: { productId?: string |
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="inventory">Inventory</Label>
+              <Label htmlFor="inventory">Наличност</Label>
               <Input
                 id="inventory"
                 name="inventory"
@@ -328,20 +328,19 @@ export default function ProductForm({ productId = null }: { productId?: string |
               />
             </div>
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="brand">Brand</Label>
+              <Label htmlFor="brand">Марка</Label>
               <Select value={formData.brand} onValueChange={(value) => setFormData({ ...formData, brand: value })}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a brand" />
+                  <SelectValue placeholder="Избери марка" />
                 </SelectTrigger>
                 <SelectContent>
                   {brands.length === 0 ? (
                     <div className="p-2 text-sm text-muted-foreground">
-                      No brands available.
+                      Няма налични марки.
                       <a href="/admin/brands" className="text-primary hover:underline ml-1">
-                        Add brands
+                        Добави марка
                       </a>
                     </div>
                   ) : (
@@ -356,33 +355,33 @@ export default function ProductForm({ productId = null }: { productId?: string |
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="model">Model</Label>
+              <Label htmlFor="model">Модел</Label>
               <Input
                 id="model"
                 name="model"
                 value={formData.model}
                 onChange={handleInputChange}
-                placeholder="e.g. iPhone 13 Pro"
+                placeholder="напр. iPhone 13 Pro"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="condition">Condition</Label>
+              <Label htmlFor="condition">Състояние</Label>
               <Select
                 value={formData.condition}
                 onValueChange={(value) => setFormData({ ...formData, condition: value })}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select condition" />
+                  <SelectValue placeholder="Избери състояние" />
                 </SelectTrigger>
                 <SelectContent>
                   {conditions.length === 0 ? (
                     <div className="p-2 text-sm text-muted-foreground">
-                      No conditions available.
+                      Няма налични състояния.
                       <a href="/admin/attributes" className="text-primary hover:underline ml-1">
-                        Add conditions
+                        Добави състояние
                       </a>
                     </div>
                   ) : (
@@ -397,17 +396,17 @@ export default function ProductForm({ productId = null }: { productId?: string |
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="storage">Storage</Label>
+              <Label htmlFor="storage">Памет</Label>
               <Select value={formData.storage} onValueChange={(value) => setFormData({ ...formData, storage: value })}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select storage" />
+                  <SelectValue placeholder="Избери капацитет" />
                 </SelectTrigger>
                 <SelectContent>
                   {storageOptions.length === 0 ? (
                     <div className="p-2 text-sm text-muted-foreground">
-                      No storage options available.
+                      Няма налични опции за памет.
                       <a href="/admin/attributes" className="text-primary hover:underline ml-1">
-                        Add storage options
+                        Добави памет
                       </a>
                     </div>
                   ) : (
@@ -424,17 +423,17 @@ export default function ProductForm({ productId = null }: { productId?: string |
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="carrier">Carrier</Label>
+              <Label htmlFor="carrier">Оператор</Label>
               <Select value={formData.carrier} onValueChange={(value) => setFormData({ ...formData, carrier: value })}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select carrier" />
+                  <SelectValue placeholder="Избери оператор" />
                 </SelectTrigger>
                 <SelectContent>
                   {carriers.length === 0 ? (
                     <div className="p-2 text-sm text-muted-foreground">
-                      No carriers available.
+                      Няма налични оператори.
                       <a href="/admin/attributes" className="text-primary hover:underline ml-1">
-                        Add carriers
+                        Добави оператор
                       </a>
                     </div>
                   ) : (
@@ -449,17 +448,17 @@ export default function ProductForm({ productId = null }: { productId?: string |
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="color">Color</Label>
+              <Label htmlFor="color">Цвят</Label>
               <Select value={formData.color} onValueChange={(value) => setFormData({ ...formData, color: value })}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select color" />
+                  <SelectValue placeholder="Избери цвят" />
                 </SelectTrigger>
                 <SelectContent>
                   {colors.length === 0 ? (
                     <div className="p-2 text-sm text-muted-foreground">
-                      No colors available.
+                      Няма налични цветове.
                       <a href="/admin/attributes" className="text-primary hover:underline ml-1">
-                        Add colors
+                        Добави цвят
                       </a>
                     </div>
                   ) : (
@@ -476,30 +475,30 @@ export default function ProductForm({ productId = null }: { productId?: string |
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="imeiNumber">IMEI Number</Label>
+              <Label htmlFor="imeiNumber">IMEI номер</Label>
               <Input
                 id="imeiNumber"
                 name="imeiNumber"
                 value={formData.imeiNumber}
                 onChange={handleInputChange}
-                placeholder="15-17 digit IMEI number"
+                placeholder="15-17 цифрен IMEI номер"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="batteryHealth">Battery Health</Label>
+              <Label htmlFor="batteryHealth">Здраве на батерията</Label>
               <Input
                 id="batteryHealth"
                 name="batteryHealth"
                 value={formData.batteryHealth}
                 onChange={handleInputChange}
-                placeholder="e.g. 92%"
+                placeholder="напр. 92%"
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="imageUrl">Product Image URL</Label>
+            <Label htmlFor="imageUrl">URL на основно изображение</Label>
             <Input
               id="imageUrl"
               name="imageUrl"
@@ -509,13 +508,13 @@ export default function ProductForm({ productId = null }: { productId?: string |
               placeholder="https://example.com/image.jpg"
             />
             <p className="text-xs text-muted-foreground">
-              Enter a direct URL to your product image. Leave empty to use a placeholder image.
+              Въведи директен линк към изображението. Ако не е въведен, ще се използва изображение по подразбиране.
             </p>
             {formData.image && (
               <div className="mt-2">
                 <img
-                  src={formData.image || "/placeholder.svg"}
-                  alt="Product preview"
+                  src={formData.image || DEFAULT_PLACEHOLDER_IMAGE}
+                  alt="Преглед на продукта"
                   className="h-40 w-40 object-cover rounded-md border"
                   onError={(e) => {
                     e.currentTarget.src = DEFAULT_PLACEHOLDER_IMAGE
@@ -530,15 +529,15 @@ export default function ProductForm({ productId = null }: { productId?: string |
           </div>
 
           <div className="space-y-2">
-            <Label>Specifications</Label>
+            <Label>Спецификации</Label>
             <div className="flex gap-2">
               <Input
                 value={newFeature}
                 onChange={(e) => setNewFeature(e.target.value)}
-                placeholder="Add a specification"
+                placeholder="Добави спецификация"
               />
               <Button type="button" onClick={handleAddFeature}>
-                Add
+                Добави
               </Button>
             </div>
             {formData.features.length > 0 && (
@@ -547,7 +546,7 @@ export default function ProductForm({ productId = null }: { productId?: string |
                   <div key={index} className="flex items-center justify-between bg-muted p-2 rounded-md">
                     <span>{feature}</span>
                     <Button type="button" variant="ghost" size="sm" onClick={() => handleRemoveFeature(index)}>
-                      Remove
+                      Премахни
                     </Button>
                   </div>
                 ))}
@@ -556,15 +555,15 @@ export default function ProductForm({ productId = null }: { productId?: string |
           </div>
 
           <div className="space-y-2">
-            <Label>Included Accessories</Label>
+            <Label>Аксесоари</Label>
             <div className="flex gap-2">
               <Input
                 value={newAccessory}
                 onChange={(e) => setNewAccessory(e.target.value)}
-                placeholder="Add an accessory"
+                placeholder="Добави аксесоар"
               />
               <Button type="button" onClick={handleAddAccessory}>
-                Add
+                Добави
               </Button>
             </div>
             {formData.accessories.length > 0 && (
@@ -573,7 +572,7 @@ export default function ProductForm({ productId = null }: { productId?: string |
                   <div key={index} className="flex items-center justify-between bg-muted p-2 rounded-md">
                     <span>{accessory}</span>
                     <Button type="button" variant="ghost" size="sm" onClick={() => handleRemoveAccessory(index)}>
-                      Remove
+                      Премахни
                     </Button>
                   </div>
                 ))}
@@ -582,7 +581,7 @@ export default function ProductForm({ productId = null }: { productId?: string |
           </div>
 
           <div className="space-y-2">
-            <Label>Categories</Label>
+            <Label>Категории</Label>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
               {categories.map((category) => (
                 <div key={category.id} className="flex items-center space-x-2">
@@ -599,11 +598,11 @@ export default function ProductForm({ productId = null }: { productId?: string |
             </div>
             {categories.length === 0 && (
               <p className="text-sm text-muted-foreground">
-                No categories found.{" "}
+                Няма налични категории.{" "}
                 <a href="/admin/categories" className="text-primary hover:underline">
-                  Add some categories
+                  Добави категории
                 </a>{" "}
-                first.
+                първо.
               </p>
             )}
           </div>
@@ -616,12 +615,12 @@ export default function ProductForm({ productId = null }: { productId?: string |
               onCheckedChange={(checked) => setFormData({ ...formData, featured: !!checked })}
             />
             <Label htmlFor="featured" className="font-normal">
-              Featured product (will be displayed on homepage)
+              Показвай на начална страница
             </Label>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="discount">Discount (%)</Label>
+            <Label htmlFor="discount">Отстъпка (%)</Label>
             <Input
               id="discount"
               name="discount"
@@ -630,16 +629,17 @@ export default function ProductForm({ productId = null }: { productId?: string |
               value={formData.discount}
               onChange={(e) => setFormData({ ...formData, discount: Number(e.target.value) })}
             />
-            <p className="text-sm text-muted-foreground">Discount percentage off original price (optional)</p>
+            <p className="text-sm text-muted-foreground">Процентна отстъпка от оригиналната цена (по желание)</p>
           </div>
         </CardContent>
+
         <CardFooter className="flex justify-between">
           <Button variant="outline" type="button" onClick={() => router.push("/admin/products")}>
-            Cancel
+            Отказ
           </Button>
           <Button type="submit" disabled={loading}>
             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {productId ? "Update Phone" : "Add Phone"}
+            {productId ? "Обнови телефона" : "Добави телефон"}
           </Button>
         </CardFooter>
       </form>

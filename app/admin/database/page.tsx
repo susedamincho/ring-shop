@@ -15,22 +15,22 @@ export default function DatabaseSettingsPage() {
         <ProtectedRoute adminOnly>
             <div className="flex flex-col gap-6">
                 <div className="flex items-center justify-between">
-                    <h1 className="text-3xl font-bold">Database Settings</h1>
+                    <h1 className="text-3xl font-bold">Настройки на базата данни</h1>
                 </div>
 
                 <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="w-full">
                     <TabsList>
-                        <TabsTrigger value="initialization">Initialization</TabsTrigger>
-                        <TabsTrigger value="management">Data Management</TabsTrigger>
-                        <TabsTrigger value="backup">Backup & Restore</TabsTrigger>
+                        <TabsTrigger value="initialization">Инициализация</TabsTrigger>
+                        <TabsTrigger value="management">Управление на данни</TabsTrigger>
+                        <TabsTrigger value="backup">Резервно копие и възстановяване</TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="initialization" className="pt-6">
                         <Card>
                             <CardHeader>
-                                <CardTitle>Database Initialization</CardTitle>
+                                <CardTitle>Инициализация на базата данни</CardTitle>
                                 <CardDescription>
-                                    Initialize your database with default data. You can choose what type of data to add.
+                                    Инициализирайте базата данни с начални стойности. Изберете какви типове данни да се добавят.
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
@@ -42,8 +42,8 @@ export default function DatabaseSettingsPage() {
                     <TabsContent value="management" className="pt-6">
                         <Card>
                             <CardHeader>
-                                <CardTitle>Data Management</CardTitle>
-                                <CardDescription>Manage your database entries. Add, edit, or delete data.</CardDescription>
+                                <CardTitle>Управление на данни</CardTitle>
+                                <CardDescription>Управлявайте записите в базата – добавяне, редактиране или изтриване.</CardDescription>
                             </CardHeader>
                             <CardContent>
                                 <AdminDataManagement />
@@ -54,8 +54,8 @@ export default function DatabaseSettingsPage() {
                     <TabsContent value="backup" className="pt-6">
                         <Card>
                             <CardHeader>
-                                <CardTitle>Backup & Restore</CardTitle>
-                                <CardDescription>Create backups of your database and restore from previous backups.</CardDescription>
+                                <CardTitle>Резервно копие и възстановяване</CardTitle>
+                                <CardDescription>Създайте резервно копие на базата и възстановете от предишна версия.</CardDescription>
                             </CardHeader>
                             <CardContent>
                                 <AdminBackupRestore />

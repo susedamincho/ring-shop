@@ -12,36 +12,31 @@ export default function ProductGrid({ categoryId = null }: { categoryId?: string
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
 
-  // Fetch products when component mounts or when search params change
+  // Извличане на продукти при зареждане или промяна в параметрите
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true)
 
-        // Get search term if it exists
         const search = searchParams.get("search")
 
-        // Fetch products from Firebase
         let fetchedProducts = []
 
         if (categoryId) {
-          // If a category ID is provided, fetch products for that category
           fetchedProducts = await getProducts({
             categoryId,
             search: search || null,
           })
         } else {
-          // Otherwise, fetch all products
           fetchedProducts = await getProducts({
             search: search || null,
           })
         }
 
         setProducts(fetchedProducts)
-        // Apply filters to the fetched products
         applyFilters(fetchedProducts)
       } catch (error) {
-        console.error("Error fetching products:", error)
+        console.error("Грешка при зареждане на продуктите:", error)
       } finally {
         setLoading(false)
       }
@@ -50,7 +45,7 @@ export default function ProductGrid({ categoryId = null }: { categoryId?: string
     fetchProducts()
   }, [categoryId, searchParams])
 
-  // Apply filters whenever search params or products change
+  // Приложение на филтрите при промени
   useEffect(() => {
     if (products.length > 0) {
       applyFilters(products)
@@ -58,7 +53,6 @@ export default function ProductGrid({ categoryId = null }: { categoryId?: string
   }, [searchParams, products])
 
   const applyFilters = (productsToFilter: Product[]) => {
-    // Get filter values from URL params
     const minPrice = searchParams.get("minPrice") ? Number.parseFloat(searchParams.get("minPrice") || "0") : 0
     const maxPrice = searchParams.get("maxPrice")
       ? Number.parseFloat(searchParams.get("maxPrice") || "0")
@@ -68,14 +62,11 @@ export default function ProductGrid({ categoryId = null }: { categoryId?: string
     const colors = searchParams.get("colors")?.split(",") || []
     const sizes = searchParams.get("sizes")?.split(",") || []
 
-    // Apply all filters to the products
     const filtered = productsToFilter.filter((product) => {
-      // Price filter
       if (product.price < minPrice || product.price > maxPrice) {
         return false
       }
 
-      // Category filter
       if (
         categoryIds.length > 0 &&
         (!product.categoryIds || !categoryIds.some((id) => (product.categoryIds || []).includes(id)))
@@ -83,12 +74,10 @@ export default function ProductGrid({ categoryId = null }: { categoryId?: string
         return false
       }
 
-      // Brand filter (fixed: use product.brand)
       if (brandIds.length > 0 && (!product.brand || !brandIds.includes(product.brand))) {
         return false
       }
 
-      // Color filter
       if (colors.length > 0 && (!product.color || !colors.includes(product.color))) {
         return false
       }
@@ -110,11 +99,11 @@ export default function ProductGrid({ categoryId = null }: { categoryId?: string
   if (filteredProducts.length === 0) {
     return (
       <div className="text-center py-12">
-        <h3 className="text-lg font-medium">No products found</h3>
+        <h3 className="text-lg font-medium">Няма открити продукти</h3>
         <p className="text-muted-foreground mt-2">
           {categoryId
-            ? "There are no products in this category matching your filters."
-            : "There are no products matching your filters."}
+            ? "Няма продукти в тази категория, които отговарят на зададените филтри."
+            : "Няма продукти, които отговарят на зададените филтри."}
         </p>
       </div>
     )

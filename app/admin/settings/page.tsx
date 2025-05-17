@@ -252,7 +252,7 @@ export default function AdminSettingsPage() {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="taxRate">Процент на Такса (%)</Label>
+                      <Label htmlFor="taxRate">данък (%)</Label>
                       <Input
                         id="taxRate"
                         name="taxRate"
@@ -262,7 +262,7 @@ export default function AdminSettingsPage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="freeShippingThreshold">Праг за безплатна доставка ($)</Label>
+                      <Label htmlFor="freeShippingThreshold">Праг за безплатна доставка (лв.)</Label>
                       <Input
                         id="freeShippingThreshold"
                         name="freeShippingThreshold"

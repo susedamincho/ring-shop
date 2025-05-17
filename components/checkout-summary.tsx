@@ -17,14 +17,14 @@ export default function CheckoutSummary() {
   return (
     <div className="rounded-lg border shadow-sm">
       <div className="p-6">
-        <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
+        <h2 className="text-lg font-semibold mb-4">Обобщение на поръчката</h2>
 
         <div className="space-y-4">
           <div className="space-y-2">
             {cart.map((item) => (
               <div key={`${item.id}-${item.size}-${item.color}`} className="flex justify-between text-sm">
                 <span>
-                  {item.name} x {item.quantity}
+                  {item.name} × {item.quantity}
                 </span>
                 <span>{formatCurrency(item.price * item.quantity)}</span>
               </div>
@@ -35,22 +35,22 @@ export default function CheckoutSummary() {
 
           <div className="space-y-2">
             <div className="flex justify-between">
-              <span>Subtotal</span>
+              <span>Междинна сума</span>
               <span>{formatCurrency(subtotal)}</span>
             </div>
 
-            <div className="flex justify-between">
-              <span>Shipping</span>
-              <span>{shipping === 0 ? "Free" : formatCurrency(shipping)}</span>
+            <div className="flex justify-between relative">
+              <span>Доставка</span>
+              <span>{shipping === 0 ? "Безплатно" : formatCurrency(shipping)}</span>
               {shipping === 0 && (
                 <span className="absolute right-8 text-xs text-green-600">
-                  Free shipping on orders over ${settings.freeShippingThreshold}
+                  Безплатна доставка при поръчки над {formatCurrency(settings.freeShippingThreshold)}
                 </span>
               )}
             </div>
 
             <div className="flex justify-between">
-              <span>Tax ({settings.taxRate}%)</span>
+              <span>ДДС ({settings.taxRate}%)</span>
               <span>{formatCurrency(tax)}</span>
             </div>
           </div>
@@ -58,7 +58,7 @@ export default function CheckoutSummary() {
           <Separator />
 
           <div className="flex justify-between font-semibold">
-            <span>Total</span>
+            <span>Общо</span>
             <span>{formatCurrency(total)}</span>
           </div>
         </div>

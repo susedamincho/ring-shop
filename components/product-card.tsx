@@ -142,7 +142,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       >
         <Button size="sm" className="w-full bg-[#0d9488] hover:bg-[#0d9488]/80 text-white" onClick={handleAddToCart}>
           <ShoppingCart className="mr-2 h-4 w-4" />
-          Add to Cart
+          Добави в количката
         </Button>
       </div>
     </div>

@@ -1,8 +1,10 @@
+// файл: TermsOfServicePage.tsx
+
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Terms of Service | RingShop",
-  description: "RingShop's terms of service and conditions of use.",
+  title: "Общи условия | RingShop",
+  description: "Общите условия за ползване на RingShop.",
 }
 
 export default function TermsOfServicePage() {
@@ -10,100 +12,98 @@ export default function TermsOfServicePage() {
     <div className="container max-w-4xl py-12 px-4 md:px-6">
       <div className="space-y-8">
         <div className="text-center space-y-4">
-          <h1 className="text-4xl font-bold tracking-tight">Terms of Service</h1>
-          <p className="text-muted-foreground">Last updated: April 16, 2025</p>
+          <h1 className="text-4xl font-bold tracking-tight">Общи условия</h1>
+          <p className="text-muted-foreground">Последна актуализация: 16 април 2025 г.</p>
         </div>
 
         <div className="prose prose-slate dark:prose-invert max-w-none">
           <p>
-            Welcome to RingShop. These Terms of Service ("Terms") govern your use of our website, products, and
-            services. By accessing or using RingShop, you agree to be bound by these Terms.
+            Добре дошли в RingShop. Настоящите Общи условия („Условия“) уреждат ползването на нашия уебсайт,
+            продукти и услуги. С достъпа си до RingShop или използването му, Вие се съгласявате с тези Условия.
           </p>
 
-          <h2>1. Acceptance of Terms</h2>
+          <h2>1. Приемане на условията</h2>
           <p>
-            By accessing or using our website, you agree to be bound by these Terms and our Privacy Policy. If you do
-            not agree to these Terms, please do not use our services.
+            С използването на нашия уебсайт Вие се съгласявате с настоящите Условия и нашата Политика за поверителност.
+            Ако не сте съгласни, моля, не използвайте нашите услуги.
           </p>
 
-          <h2>2. Changes to Terms</h2>
+          <h2>2. Промени в условията</h2>
           <p>
-            We reserve the right to modify these Terms at any time. We will provide notice of any material changes by
-            updating the "Last Updated" date at the top of this page. Your continued use of our services after such
-            modifications will constitute your acknowledgment of the modified Terms.
+            Запазваме си правото да променяме тези Условия по всяко време. Ще Ви уведомим за съществени промени чрез
+            актуализиране на датата "Последна актуализация". Продължаването на ползването на услугите след такива
+            промени означава, че приемате новите Условия.
           </p>
 
-          <h2>3. User Accounts</h2>
+          <h2>3. Потребителски акаунти</h2>
           <p>
-            When you create an account with us, you must provide accurate, complete, and current information. You are
-            responsible for safeguarding your password and for all activities that occur under your account. Notify us
-            immediately of any unauthorized use of your account.
+            При създаване на акаунт трябва да предоставите точна и актуална информация. Вие сте отговорни за защитата
+            на своята парола и за всички действия, извършени през Вашия акаунт. Уведомете ни незабавно при
+            неоторизирана употреба.
           </p>
 
-          <h2>4. Products and Orders</h2>
+          <h2>4. Продукти и поръчки</h2>
           <p>
-            All product descriptions, including pricing and availability, are subject to change without notice. We
-            reserve the right to limit quantities, reject, or cancel orders at our discretion.
+            Всички описания, цени и наличности на продукти могат да се променят без предизвестие. Запазваме си правото
+            да ограничаваме количества и да отхвърляме или анулираме поръчки по наша преценка.
           </p>
 
-          <h2>5. Payment Terms</h2>
+          <h2>5. Условия за плащане</h2>
           <p>
-            By providing a payment method, you represent that you are authorized to use the designated payment method.
-            You agree to pay all charges at the prices then in effect for your purchases and any applicable shipping
-            fees.
+            С предоставянето на начин на плащане декларирате, че сте упълномощени да го използвате. Съгласявате се да
+            заплатите всички такси по действащите цени, включително таксите за доставка.
           </p>
 
-          <h2>6. Shipping and Delivery</h2>
+          <h2>6. Доставка</h2>
           <p>
-            Shipping times are estimates and not guaranteed. We are not responsible for delays caused by carriers,
-            customs, or other factors outside our control. Please refer to our Shipping Policy for more details.
+            Времената за доставка са ориентировъчни и не са гарантирани. Не носим отговорност за закъснения, причинени
+            от куриери, митници или други независещи от нас обстоятелства. Вижте нашата Политика за доставка за
+            подробности.
           </p>
 
-          <h2>7. Returns and Refunds</h2>
+          <h2>7. Връщания и възстановяване на суми</h2>
           <p>
-            Please refer to our Return Policy for information about returns, exchanges, and refunds. Certain items may
-            be ineligible for return or exchange.
+            Моля, вижте нашата Политика за връщане за информация относно връщания, замени и възстановявания. Някои
+            продукти може да не подлежат на връщане.
           </p>
 
-          <h2>8. Intellectual Property</h2>
+          <h2>8. Интелектуална собственост</h2>
           <p>
-            All content on our website, including text, graphics, logos, images, and software, is the property of
-            RingShop and is protected by copyright, trademark, and other intellectual property laws.
+            Всички материали на уебсайта (текстове, изображения, лога, софтуер и др.) са собственост на RingShop и са
+            защитени от авторски и други права.
           </p>
 
-          <h2>9. User Content</h2>
+          <h2>9. Съдържание от потребители</h2>
           <p>
-            By submitting content to our website (such as reviews or comments), you grant us a non-exclusive,
-            royalty-free, perpetual, irrevocable right to use, reproduce, modify, adapt, publish, translate, create
-            derivative works from, distribute, and display such content worldwide.
+            С публикуване на съдържание на сайта (напр. отзиви, коментари), ни предоставяте безвъзмездно, неограничено,
+            неотменимо право да го използваме, редактираме, превеждаме, разпространяваме и показваме публично.
           </p>
 
-          <h2>10. Prohibited Activities</h2>
+          <h2>10. Забранени дейности</h2>
           <p>
-            You agree not to engage in any activity that interferes with or disrupts our services, attempts to access
-            data not intended for you, or otherwise violates any laws or regulations.
+            Съгласявате се да не нарушавате работата на нашите услуги, да не получавате достъп до чужди данни и да не
+            извършвате незаконни действия чрез платформата.
           </p>
 
-          <h2>11. Disclaimer of Warranties</h2>
+          <h2>11. Отказ от гаранции</h2>
           <p>
-            Our services are provided "as is" without any warranties, expressed or implied. We do not guarantee that our
-            services will be error-free or uninterrupted.
+            Нашите услуги се предоставят "каквито са", без гаранции. Не гарантираме, че услугите ще бъдат без грешки
+            или прекъсвания.
           </p>
 
-          <h2>12. Limitation of Liability</h2>
+          <h2>12. Ограничаване на отговорност</h2>
           <p>
-            In no event shall RingShop be liable for any indirect, incidental, special, consequential, or punitive
-            damages arising out of or related to your use of our services.
+            RingShop не носи отговорност за каквито и да е косвени, случайни, специални или последващи вреди, възникнали
+            от използването на нашите услуги.
           </p>
 
-          <h2>13. Governing Law</h2>
+          <h2>13. Приложимо право</h2>
           <p>
-            These Terms shall be governed by and construed in accordance with the laws of the state of New York, without
-            regard to its conflict of law provisions.
+            Настоящите Условия се уреждат от законодателството на щата Ню Йорк, без оглед на колизионни норми.
           </p>
 
-          <h2>14. Contact Information</h2>
-          <p>For questions about these Terms, please contact us at legal@RingShop.com.</p>
+          <h2>14. Контакт с нас</h2>
+          <p>При въпроси относно тези Условия, свържете се с нас на legal@RingShop.com.</p>
         </div>
       </div>
     </div>

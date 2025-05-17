@@ -347,10 +347,10 @@ export default function CheckoutPage() {
                         ) : (
                           <div className="text-center py-4 border rounded-lg border-white/10">
                             <MapPin className="mx-auto h-8 w-8 text-gray-400" />
-                            <p className="text-gray-400 mb-2">You don't have any saved addresses.</p>
+                            <p className="text-gray-400 mb-2">Нямате запазени адреси.</p>
                             <Button type="button" variant="outline" size="sm" onClick={() => setAddressDialogOpen(true)}>
                               <Plus className="mr-2 h-4 w-4 text-black" />
-                              <span className="text-black">Add New Address</span>
+                              <span className="text-black">Добавете нов адрес</span>
                             </Button>
                           </div>
                         )}
@@ -501,8 +501,8 @@ export default function CheckoutPage() {
                 {/* Payment Method */}
                 <Card className="bg-[#1e293b]/80 backdrop-blur-sm border-white/10 text-white">
                   <CardHeader>
-                    <CardTitle>Payment Method</CardTitle>
-                    <CardDescription>Select your preferred payment method</CardDescription>
+                    <CardTitle>Метод на плащане</CardTitle>
+                    <CardDescription>Изберете предпочитан метод на плащане</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <Tabs
@@ -511,17 +511,17 @@ export default function CheckoutPage() {
                       onValueChange={(value) => setFormData((prev) => ({ ...prev, paymentMethod: value }))}
                     >
                       <TabsList className="grid w-full grid-cols-3">
-                        <TabsTrigger value="card">Credit Card</TabsTrigger>
+                        <TabsTrigger value="card">Кредитна карта</TabsTrigger>
                       </TabsList>
                       <TabsContent value="card" className="space-y-4 pt-4">
                         {loadingPaymentMethods ? (
                           <div className="flex items-center justify-center py-4">
                             <Loader2 className="h-6 w-6 animate-spin mr-2" />
-                            <p>Loading saved cards...</p>
+                            <p>Зареждане на запазени карти...</p>
                           </div>
                         ) : paymentMethods.length > 0 ? (
                           <div className="space-y-4">
-                            <div className="text-sm font-medium">Your saved cards</div>
+                            <div className="text-sm font-medium">Вашите запазени карти</div>
                             <RadioGroup
                               value={selectedPaymentMethod}
                               onValueChange={setSelectedPaymentMethod}
@@ -539,7 +539,7 @@ export default function CheckoutPage() {
                                       {method.cardType} {method.cardNumber}
                                       {method.isDefault && (
                                         <span className="ml-2 text-xs bg-[#0d9488]/20 text-[#0d9488] px-2 py-1 rounded-full">
-                                          Default
+                                          По подразбиране
                                         </span>
                                       )}
                                     </Label>
@@ -708,7 +708,7 @@ export default function CheckoutPage() {
                       Добавяне...
                     </>
                   ) : (
-                    "Add Address"
+                    "Добави адрес"
                   )}
                 </Button>
               </DialogFooter>

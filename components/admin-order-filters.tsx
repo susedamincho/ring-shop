@@ -24,7 +24,6 @@ export default function AdminOrderFilters() {
   }
 
   const applyFilters = () => {
-    // In a real app, this would update the URL or trigger a data fetch
     console.log({
       searchTerm,
       dateRange,
@@ -41,7 +40,7 @@ export default function AdminOrderFilters() {
   return (
     <div className="flex items-center gap-2">
       <Input
-        placeholder="Search orders..."
+        placeholder="Търсене на поръчки..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         className="w-[250px]"
@@ -51,21 +50,21 @@ export default function AdminOrderFilters() {
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="sm">
             <Filter className="mr-2 h-4 w-4" />
-            Filter
+            Филтър
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56">
-          <DropdownMenuLabel>Filter Orders</DropdownMenuLabel>
+          <DropdownMenuLabel>Филтриране на поръчки</DropdownMenuLabel>
           <DropdownMenuSeparator />
 
           <div className="p-2">
-            <h4 className="mb-2 text-sm font-medium">Date Range</h4>
+            <h4 className="mb-2 text-sm font-medium">Период</h4>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
                 <Input
                   type="date"
-                  placeholder="From"
+                  placeholder="От"
                   name="from"
                   value={dateRange.from}
                   onChange={handleDateChange}
@@ -76,7 +75,7 @@ export default function AdminOrderFilters() {
                 <Calendar className="h-4 w-4 text-muted-foreground" />
                 <Input
                   type="date"
-                  placeholder="To"
+                  placeholder="До"
                   name="to"
                   value={dateRange.to}
                   onChange={handleDateChange}
@@ -88,16 +87,16 @@ export default function AdminOrderFilters() {
 
           <DropdownMenuSeparator />
           <div className="p-2">
-            <h4 className="mb-2 text-sm font-medium">Payment Status</h4>
+            <h4 className="mb-2 text-sm font-medium">Статус на плащане</h4>
             <Select value={paymentStatus} onValueChange={setPaymentStatus}>
               <SelectTrigger className="h-8">
-                <SelectValue placeholder="Select status" />
+                <SelectValue placeholder="Избери статус" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="paid">Paid</SelectItem>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="failed">Failed</SelectItem>
-                <SelectItem value="refunded">Refunded</SelectItem>
+                <SelectItem value="paid">Платено</SelectItem>
+                <SelectItem value="pending">Изчакващо</SelectItem>
+                <SelectItem value="failed">Неуспешно</SelectItem>
+                <SelectItem value="refunded">Възстановено</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -105,10 +104,10 @@ export default function AdminOrderFilters() {
           <DropdownMenuSeparator />
           <div className="p-2 flex gap-2">
             <Button size="sm" className="w-full" onClick={applyFilters}>
-              Apply
+              Приложи
             </Button>
             <Button size="sm" variant="outline" className="w-full" onClick={clearFilters}>
-              Clear
+              Изчисти
             </Button>
           </div>
         </DropdownMenuContent>

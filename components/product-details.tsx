@@ -1,3 +1,5 @@
+// Файл: ProductDetails.tsx
+
 "use client"
 
 import Link from "next/link"
@@ -13,21 +15,21 @@ interface ProductDetailsProps {
 }
 
 export default function ProductDetails({ product }: ProductDetailsProps) {
-    // Determine product status based on inventory
+    // Определи статуса на продукта на база наличността
     const productStatus =
         (product.inventory ?? 0) > 0
-            ? `In stock${(product.inventory ?? 0) < 10 ? " (Low stock)" : " and ready to ship"}`
-            : "Out of stock"
+            ? `В наличност${(product.inventory ?? 0) < 10 ? " (Ограничени бройки)" : " и готов за доставка"}`
+            : "Изчерпан"
 
     return (
         <>
             <Link href="/products" className="inline-flex items-center gap-1 text-sm font-medium mb-6 hover:underline">
                 <ArrowLeft className="h-4 w-4" />
-                Back to Phones
+                Обратно към телефони
             </Link>
 
             <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-                {/* Product Images */}
+                {/* Снимки на продукта */}
                 <div className="space-y-4">
                     <div className="overflow-hidden rounded-lg bg-gray-100">
                         <img
@@ -45,7 +47,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
                                 <div key={i} className="overflow-hidden rounded-lg bg-gray-100">
                                     <img
                                         src={image || "/placeholder.svg"}
-                                        alt={`${product.name} - View ${i + 1}`}
+                                        alt={`${product.name} - Изглед ${i + 1}`}
                                         className="w-full object-cover aspect-square"
                                         onError={(e) => {
                                             e.currentTarget.src = "/placeholder.svg"
@@ -60,7 +62,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
                                 <div key={i} className="overflow-hidden rounded-lg bg-gray-100">
                                     <img
                                         src={product.image || "/placeholder.svg"}
-                                        alt={`${product.name} - View ${i + 1}`}
+                                        alt={`${product.name} - Изглед ${i + 1}`}
                                         className="w-full object-cover aspect-square"
                                         onError={(e) => {
                                             e.currentTarget.src = "/placeholder.svg"
@@ -72,38 +74,37 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
                     )}
                 </div>
 
-                {/* Product Details */}
+                {/* Детайли за продукта */}
                 <div className="space-y-6">
                     <div>
                         <h1 className="text-3xl font-bold">{product.name}</h1>
                         <div className="flex items-center gap-4 mt-2">
-
-                            {product.brand && <div className="text-sm text-gray-600">Brand: {product.brand}</div>}
+                            {product.brand && <div className="text-sm text-gray-600">Марка: {product.brand}</div>}
                         </div>
                     </div>
 
                     <div className="text-2xl font-bold">{formatCurrency(product.price)}</div>
 
                     <div className="space-y-4">
-                        {/* Phone Specifications */}
+                        {/* Спецификации */}
                         <div className="grid grid-cols-2 gap-4">
                             {product.model && (
                                 <div>
-                                    <h3 className="text-sm font-medium text-gray-500">Model</h3>
+                                    <h3 className="text-sm font-medium text-gray-500">Модел</h3>
                                     <p>{product.model}</p>
                                 </div>
                             )}
 
                             {product.storage && (
                                 <div>
-                                    <h3 className="text-sm font-medium text-gray-500">Storage</h3>
+                                    <h3 className="text-sm font-medium text-gray-500">Памет</h3>
                                     <p>{product.storage}</p>
                                 </div>
                             )}
 
                             {product.condition && (
                                 <div>
-                                    <h3 className="text-sm font-medium text-gray-500">Condition</h3>
+                                    <h3 className="text-sm font-medium text-gray-500">Състояние</h3>
                                     <Badge
                                         variant={
                                             product.condition === "New" || product.condition === "Like New"
@@ -120,21 +121,21 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
 
                             {product.carrier && (
                                 <div>
-                                    <h3 className="text-sm font-medium text-gray-500">Carrier</h3>
+                                    <h3 className="text-sm font-medium text-gray-500">Оператор</h3>
                                     <p>{product.carrier}</p>
                                 </div>
                             )}
 
                             {product.color && (
                                 <div>
-                                    <h3 className="text-sm font-medium text-gray-500">Color</h3>
+                                    <h3 className="text-sm font-medium text-gray-500">Цвят</h3>
                                     <p>{product.color}</p>
                                 </div>
                             )}
 
                             {product.batteryHealth && (
                                 <div>
-                                    <h3 className="text-sm font-medium text-gray-500">Battery Health</h3>
+                                    <h3 className="text-sm font-medium text-gray-500">Състояние на батерията</h3>
                                     <p>{product.batteryHealth}</p>
                                 </div>
                             )}
@@ -142,7 +143,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
 
                         {product.imeiNumber && (
                             <div>
-                                <h3 className="text-sm font-medium text-gray-500">IMEI Number</h3>
+                                <h3 className="text-sm font-medium text-gray-500">IMEI номер</h3>
                                 <p>{product.imeiNumber}</p>
                             </div>
                         )}
@@ -157,17 +158,17 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
                             <Check className="h-4 w-4" />
                             {productStatus}
                         </div>
-                        <div className="text-sm text-gray-600">Free shipping on orders over $100</div>
+                        <div className="text-sm text-gray-600">Безплатна доставка при поръчки над 100 лв</div>
                     </div>
 
                     <Tabs defaultValue="description">
                         <TabsList className="grid w-full grid-cols-3">
-                            <TabsTrigger value="description">Description</TabsTrigger>
-                            <TabsTrigger value="features">Specifications</TabsTrigger>
-                            <TabsTrigger value="shipping">Shipping</TabsTrigger>
+                            <TabsTrigger value="description">Описание</TabsTrigger>
+                            <TabsTrigger value="features">Характеристики</TabsTrigger>
+                            <TabsTrigger value="shipping">Доставка</TabsTrigger>
                         </TabsList>
                         <TabsContent value="description" className="pt-4">
-                            <p>{product.description || "No description available."}</p>
+                            <p>{product.description || "Няма налично описание."}</p>
                         </TabsContent>
                         <TabsContent value="features" className="pt-4">
                             {product.features && product.features.length > 0 ? (
@@ -177,12 +178,12 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
                                     ))}
                                 </ul>
                             ) : (
-                                <p>No specification details available.</p>
+                                <p>Няма налични спецификации.</p>
                             )}
 
                             {product.accessories && product.accessories.length > 0 && (
                                 <>
-                                    <h3 className="font-medium mt-4 mb-2">Included Accessories</h3>
+                                    <h3 className="font-medium mt-4 mb-2">Включени аксесоари</h3>
                                     <ul className="list-disc pl-5 space-y-1">
                                         {product.accessories.map((accessory, i) => (
                                             <li key={i}>{accessory}</li>
@@ -193,8 +194,9 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
                         </TabsContent>
                         <TabsContent value="shipping" className="pt-4">
                             <p>
-                                Orders typically ship within 1-2 business days. Free standard shipping on orders over $100. Express
-                                shipping options available at checkout.
+                                Поръчките обикновено се изпращат в рамките на 1–2 работни дни.
+                                Безплатна стандартна доставка при поръчки над 100 лв.
+                                Опции за експресна доставка са налични при поръчка.
                             </p>
                         </TabsContent>
                     </Tabs>
@@ -202,4 +204,4 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
             </div>
         </>
     )
-} 
+}

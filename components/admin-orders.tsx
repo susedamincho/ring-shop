@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { Eye, MoreHorizontal } from "lucide-react"
+import { Eye, MoreHorizontal, Loader2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -18,7 +18,6 @@ import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/components/ui/use-toast"
 import { getOrders, updateOrderStatus } from "@/lib/firebase/orders"
 import { formatCurrency, formatShortDate } from "@/lib/utils"
-import { Loader2 } from "lucide-react"
 
 export default function AdminOrders({ filter = "all" }) {
   const router = useRouter()
@@ -29,6 +28,7 @@ export default function AdminOrders({ filter = "all" }) {
   useEffect(() => {
     fetchOrders()
   }, [filter])
+
   const convertTimestamp = (timestamp) => {
     if (!timestamp || typeof timestamp !== "object") return timestamp
     if ("seconds" in timestamp) {
@@ -36,19 +36,17 @@ export default function AdminOrders({ filter = "all" }) {
     }
     return timestamp
   }
+
   const fetchOrders = async () => {
     try {
       setLoading(true)
       const fetchedOrders = await getOrders()
-      console.log(fetchedOrders)
-      // Convert timestamps for each order.
       const convertedOrders = fetchedOrders.map((order) => ({
         ...order,
         createdAt: convertTimestamp(order.createdAt),
         updatedAt: convertTimestamp(order.updatedAt),
       }))
 
-      // Apply filters
       let filteredOrders = convertedOrders
       if (filter !== "all") {
         filteredOrders = convertedOrders.filter((order) => order.status === filter)
@@ -56,10 +54,10 @@ export default function AdminOrders({ filter = "all" }) {
 
       setOrders(filteredOrders)
     } catch (error) {
-      console.error("Error fetching orders:", error)
+      console.error("Грешка при зареждане на поръчките:", error)
       toast({
-        title: "Error",
-        description: "Failed to load orders. Please try again.",
+        title: "Грешка",
+        description: "Неуспешно зареждане на поръчките. Опитайте отново.",
         variant: "destructive",
       })
     } finally {
@@ -73,14 +71,14 @@ export default function AdminOrders({ filter = "all" }) {
       setOrders(orders.map((order) => (order.id === orderId ? { ...order, status: newStatus } : order)))
 
       toast({
-        title: "Order status updated",
-        description: `Order ${orderId} has been updated to ${newStatus}.`,
+        title: "Статусът е обновен",
+        description: `Поръчката ${orderId} е обновена до "${newStatus}".`,
       })
     } catch (error) {
-      console.error("Error updating order status:", error)
+      console.error("Грешка при обновяване на статус:", error)
       toast({
-        title: "Error",
-        description: "Failed to update order status. Please try again.",
+        title: "Грешка",
+        description: "Неуспешно обновяване на статуса. Опитайте отново.",
         variant: "destructive",
       })
     }
@@ -101,9 +99,9 @@ export default function AdminOrders({ filter = "all" }) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-muted-foreground">{orders.length} orders</p>
+        <p className="text-sm text-muted-foreground">{orders.length} поръчки</p>
         <Button variant="outline" onClick={() => fetchOrders()}>
-          Refresh
+          Обнови
         </Button>
       </div>
 
@@ -111,20 +109,20 @@ export default function AdminOrders({ filter = "all" }) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Order ID</TableHead>
-              <TableHead>Customer</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead>Items</TableHead>
-              <TableHead>Total</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>ID на поръчка</TableHead>
+              <TableHead>Клиент</TableHead>
+              <TableHead>Дата</TableHead>
+              <TableHead>Артикули</TableHead>
+              <TableHead>Общо</TableHead>
+              <TableHead>Статус</TableHead>
+              <TableHead className="text-right">Действия</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {orders.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={7} className="text-center py-8">
-                  No orders found.
+                  Няма намерени поръчки.
                 </TableCell>
               </TableRow>
             ) : (
@@ -143,15 +141,21 @@ export default function AdminOrders({ filter = "all" }) {
                         order.status === "Delivered"
                           ? "default"
                           : order.status === "Shipped"
-                            ? "secondary"
-                            : order.status === "Processing"
-                              ? "outline"
-                              : order.status === "Pending"
-                                ? "destructive"
-                                : "outline"
+                          ? "secondary"
+                          : order.status === "Processing"
+                          ? "outline"
+                          : order.status === "Pending"
+                          ? "destructive"
+                          : "outline"
                       }
                     >
-                      {order.status}
+                      {{
+                        Pending: "Изчакваща",
+                        Processing: "Обработва се",
+                        Shipped: "Изпратена",
+                        Delivered: "Доставена",
+                        Cancelled: "Отменена",
+                      }[order.status] || order.status}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
@@ -159,31 +163,31 @@ export default function AdminOrders({ filter = "all" }) {
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon">
                           <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Actions</span>
+                          <span className="sr-only">Действия</span>
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuLabel>Действия</DropdownMenuLabel>
                         <DropdownMenuItem onClick={() => handleViewOrder(order.id)}>
                           <Eye className="mr-2 h-4 w-4" />
-                          View Details
+                          Преглед
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuLabel>Update Status</DropdownMenuLabel>
+                        <DropdownMenuLabel>Промяна на статус</DropdownMenuLabel>
                         <DropdownMenuItem onClick={() => handleUpdateStatus(order.id, "Pending")}>
-                          Pending
+                          Изчакваща
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => handleUpdateStatus(order.id, "Processing")}>
-                          Processing
+                          Обработва се
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => handleUpdateStatus(order.id, "Shipped")}>
-                          Shipped
+                          Изпратена
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => handleUpdateStatus(order.id, "Delivered")}>
-                          Delivered
+                          Доставена
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => handleUpdateStatus(order.id, "Cancelled")}>
-                          Cancelled
+                          Отменена
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>

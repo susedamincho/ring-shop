@@ -48,39 +48,33 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([])
   const [initialLoadComplete, setInitialLoadComplete] = useState(false)
 
-  // Load cart from localStorage on initial render for guests
-  // or from Firebase for logged in users
   useEffect(() => {
     const loadCart = async () => {
       try {
         if (user?.uid) {
-          // Fetch cart from Firebase
           const savedCart = await getCart(user.uid)
           if (savedCart.length > 0) {
             setCart(savedCart)
           } else {
-            // If no server cart, check localStorage
             const localCart = localStorage.getItem("cart")
             if (localCart) {
               const parsedCart = JSON.parse(localCart)
               setCart(parsedCart)
-              // Save local cart to Firebase
               await saveCart(user.uid, parsedCart)
             }
           }
         } else {
-          // For guests, use localStorage only
           const savedCart = localStorage.getItem("cart")
           if (savedCart) {
             try {
               setCart(JSON.parse(savedCart))
             } catch (error) {
-              console.error("Failed to parse cart from localStorage:", error)
+              console.error("Грешка при парсване на количката от localStorage:", error)
             }
           }
         }
       } catch (error) {
-        console.error("Error loading cart:", error)
+        console.error("Грешка при зареждане на количката:", error)
       } finally {
         setInitialLoadComplete(true)
       }
@@ -89,15 +83,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     loadCart()
   }, [user?.uid])
 
-  // Save cart to localStorage whenever it changes
   useEffect(() => {
     if (initialLoadComplete) {
       localStorage.setItem("cart", JSON.stringify(cart))
 
-      // Save to Firebase if user is logged in
       if (user?.uid) {
         saveCart(user.uid, cart).catch((error) => {
-          console.error("Error saving cart to Firebase:", error)
+          console.error("Грешка при запазване на количката във Firebase:", error)
         })
       }
     }
@@ -105,27 +97,24 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const addToCart = (product: Product, quantity = 1, size?: string, color?: string) => {
     setCart((prevCart) => {
-      // Check if item already exists in cart
       const existingItemIndex = prevCart.findIndex(
         (item) => item.id === product.id && item.size === size && item.color === color,
       )
 
       if (existingItemIndex !== -1) {
-        // Update quantity of existing item
         const updatedCart = [...prevCart]
         updatedCart[existingItemIndex].quantity += quantity
 
         toast({
-          title: "Cart updated",
-          description: `${product.name} quantity updated in your cart.`,
+          title: "Количката е обновена",
+          description: `${product.name} беше обновен(а) в количката.`,
         })
 
         return updatedCart
       } else {
-        // Add new item to cart
         toast({
-          title: "Added to cart",
-          description: `${product.name} has been added to your cart.`,
+          title: "Добавено в количката",
+          description: `${product.name} беше добавен(а) в количката.`,
         })
 
         return [
@@ -162,32 +151,31 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     )
 
     toast({
-      title: "Item removed",
-      description: `${item.name} has been removed from your cart.`,
+      title: "Премахнат от количката",
+      description: `${item.name} беше премахнат(а) от количката.`,
     })
   }
 
   const clearCart = () => {
     setCart([])
     if (user?.uid) {
-      // Import the clearCart function from lib/cart
       import("@/lib/firebase/cart").then(({ clearCart: clearCartFromDB }) => {
         clearCartFromDB(user.uid).catch((error) => {
-          console.error("Error clearing cart from database:", error)
+          console.error("Грешка при изчистване на количката от базата:", error)
         })
       })
     }
     toast({
-      title: "Cart cleared",
-      description: "All items have been removed from your cart.",
+      title: "Количката е изчистена",
+      description: "Всички артикули бяха премахнати от количката.",
     })
   }
 
   const saveCartToAccount = async () => {
     if (!user?.uid) {
       toast({
-        title: "Please sign in",
-        description: "You need to be signed in to save your cart.",
+        title: "Влезте в акаунта си",
+        description: "Трябва да сте влезли, за да запазите количката.",
         variant: "destructive",
       })
       return
@@ -196,14 +184,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     try {
       await saveCart(user.uid, cart)
       toast({
-        title: "Cart saved",
-        description: "Your cart has been saved to your account.",
+        title: "Количката е запазена",
+        description: "Количката ви беше запазена към акаунта.",
       })
     } catch (error) {
-      console.error("Error saving cart:", error)
+      console.error("Грешка при запазване на количката:", error)
       toast({
-        title: "Error",
-        description: "Failed to save cart. Please try again.",
+        title: "Грешка",
+        description: "Неуспешно запазване на количката. Опитайте отново.",
         variant: "destructive",
       })
     }

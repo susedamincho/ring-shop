@@ -35,11 +35,11 @@ export default function MobileNav({ navItems, categories }) {
           <li>
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="categories" className="border-none">
-                <AccordionTrigger className="py-2 text-lg">Categories</AccordionTrigger>
+                <AccordionTrigger className="py-2 text-lg">Категории</AccordionTrigger>
                 <AccordionContent>
                   <ul className="ml-4 space-y-2">
                     {categories.length === 0 ? (
-                      <li className="text-muted-foreground">No categories found</li>
+                      <li className="text-muted-foreground">Няма налични категории</li>
                     ) : (
                       categories.map((category) => (
                         <li key={category.id}>
@@ -59,7 +59,7 @@ export default function MobileNav({ navItems, categories }) {
                         className="block py-1 font-medium text-primary"
                         onClick={() => setOpen(false)}
                       >
-                        View All Products
+                        Виж всички продукти
                       </Link>
                     </li>
                   </ul>
@@ -71,7 +71,7 @@ export default function MobileNav({ navItems, categories }) {
           <li>
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="policies" className="border-none">
-                <AccordionTrigger className="py-2 text-lg">Policies</AccordionTrigger>
+                <AccordionTrigger className="py-2 text-lg">Политики</AccordionTrigger>
                 <AccordionContent>
                   <ul className="ml-4 space-y-2">
                     <li>
@@ -80,7 +80,7 @@ export default function MobileNav({ navItems, categories }) {
                         className="block py-1 text-muted-foreground"
                         onClick={() => setOpen(false)}
                       >
-                        Terms of Service
+                        Общи условия
                       </Link>
                     </li>
                     <li>
@@ -89,7 +89,7 @@ export default function MobileNav({ navItems, categories }) {
                         className="block py-1 text-muted-foreground"
                         onClick={() => setOpen(false)}
                       >
-                        Privacy Policy
+                        Политика за поверителност
                       </Link>
                     </li>
                     <li>
@@ -98,7 +98,7 @@ export default function MobileNav({ navItems, categories }) {
                         className="block py-1 text-muted-foreground"
                         onClick={() => setOpen(false)}
                       >
-                        Shipping Policy
+                        Политика за доставка
                       </Link>
                     </li>
                   </ul>
@@ -111,10 +111,10 @@ export default function MobileNav({ navItems, categories }) {
       <div className="border-t px-2 py-4">
         <div className="flex flex-col gap-2">
           <Button asChild variant="outline" className="w-full justify-start" onClick={() => setOpen(false)}>
-            <Link href="/login">Sign In</Link>
+            <Link href="/login">Вход</Link>
           </Button>
           <Button asChild className="w-full justify-start" onClick={() => setOpen(false)}>
-            <Link href="/register">Create Account</Link>
+            <Link href="/register">Създай профил</Link>
           </Button>
         </div>
       </div>

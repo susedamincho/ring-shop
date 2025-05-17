@@ -1,3 +1,5 @@
+// CustomerDetailsPage.tsx
+
 "use client"
 
 import { useParams, useRouter } from "next/navigation"
@@ -22,29 +24,15 @@ export default function CustomerDetailsPage() {
   const { toast } = useToast()
   const userId = params.id as string
 
-  // Define type for Firebase user data
-  interface UserData {
-    uid: string;
-    email?: string;
-    name?: string;
-    createdAt?: { seconds: number; nanoseconds: number };
-    lastLogin?: { seconds: number; nanoseconds: number };
-    isAdmin?: boolean;
-    [key: string]: any; // For other possible fields
-  }
-
-  // Helper: Convert a Firestore timestamp to a Date object.
-  const convertTimestamp = (timestamp: any): Date | null => {
-    if (!timestamp || typeof timestamp !== "object") return null
-    if ("seconds" in timestamp) {
-      return new Date(timestamp.seconds * 1000)
-    }
-    return null
-  }
-
   const [customer, setCustomer] = useState<any>(null)
   const [orders, setOrders] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+
+  const convertTimestamp = (timestamp: any): Date | null => {
+    if (!timestamp || typeof timestamp !== "object") return null
+    if ("seconds" in timestamp) return new Date(timestamp.seconds * 1000)
+    return null
+  }
 
   useEffect(() => {
     const fetchCustomerData = async () => {
@@ -52,14 +40,12 @@ export default function CustomerDetailsPage() {
         setLoading(true)
         const [customerData, customerOrders] = await Promise.all([getUserProfile(userId), getOrdersByUser(userId)])
 
-        // Convert customer timestamps if available.
         const convertedCustomer = customerData ? {
           ...customerData,
-          createdAt: convertTimestamp((customerData as UserData).createdAt),
-          lastLogin: convertTimestamp((customerData as UserData).lastLogin),
-        } : null;
+          createdAt: convertTimestamp(customerData.createdAt),
+          lastLogin: convertTimestamp(customerData.lastLogin),
+        } : null
 
-        // Convert order timestamps for each order.
         const convertedOrders = customerOrders.map((order: any) => ({
           ...order,
           createdAt: convertTimestamp(order.createdAt),
@@ -69,10 +55,10 @@ export default function CustomerDetailsPage() {
         setCustomer(convertedCustomer)
         setOrders(convertedOrders)
       } catch (error) {
-        console.error("Error fetching customer data:", error)
+        console.error("Грешка при зареждане на клиента:", error)
         toast({
-          title: "Error",
-          description: "Failed to load customer details. Please try again.",
+          title: "Грешка",
+          description: "Неуспешно зареждане на данните за клиента.",
           variant: "destructive",
         })
       } finally {
@@ -88,7 +74,7 @@ export default function CustomerDetailsPage() {
       <ProtectedRoute adminOnly>
         <div className="flex flex-col items-center justify-center">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <p className="mt-2 text-sm text-muted-foreground">Loading customer details...</p>
+          <p className="mt-2 text-sm text-muted-foreground">Зареждане на информация за клиента...</p>
         </div>
       </ProtectedRoute>
     )
@@ -98,35 +84,32 @@ export default function CustomerDetailsPage() {
     return (
       <ProtectedRoute adminOnly>
         <div className="flex flex-col items-center justify-center">
-          <p className="text-muted-foreground">Customer not found</p>
+          <p className="text-muted-foreground">Клиентът не е намерен</p>
           <Button variant="outline" className="mt-4" onClick={() => router.push("/admin/customers")}>
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Customers
+            Назад към клиенти
           </Button>
         </div>
       </ProtectedRoute>
     )
   }
 
-  // Calculate customer metrics
   const totalSpent = orders.reduce((sum, order) => sum + (order.total || 0), 0)
   const averageOrderValue = orders.length > 0 ? totalSpent / orders.length : 0
-  const firstOrderDate =
-    orders.length > 0
-      ? new Date(Math.min(...orders.map((o) => (o.createdAt ? o.createdAt.getTime() : Date.now()))))
-      : null
+  const firstOrderDate = orders.length > 0
+    ? new Date(Math.min(...orders.map((o) => o.createdAt?.getTime() ?? Date.now())))
+    : null
 
   return (
     <ProtectedRoute adminOnly>
-
       <div className="flex flex-col">
         <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background px-6">
           <Button variant="outline" size="sm" onClick={() => router.push("/admin/customers")}>
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back
+            Назад
           </Button>
           <div className="flex flex-1 items-center">
-            <h1 className="text-xl font-semibold">Customer Details</h1>
+            <h1 className="text-xl font-semibold">Детайли за клиента</h1>
           </div>
         </header>
 
@@ -134,9 +117,9 @@ export default function CustomerDetailsPage() {
           <div className="grid gap-6 md:grid-cols-3">
             <Card className="md:col-span-1">
               <CardHeader>
-                <CardTitle>Customer Profile</CardTitle>
+                <CardTitle>Профил на клиента</CardTitle>
                 <CardDescription>
-                  Member since {customer.createdAt ? format(customer.createdAt, "MMMM yyyy") : "N/A"}
+                  Член от {customer.createdAt ? format(customer.createdAt, "MMMM yyyy") : "Няма данни"}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -146,9 +129,9 @@ export default function CustomerDetailsPage() {
                       {customer.name ? customer.name.charAt(0).toUpperCase() : "U"}
                     </div>
                     <div className="ml-4">
-                      <div className="font-medium">{customer.name || "Unknown"}</div>
+                      <div className="font-medium">{customer.name || "Неизвестен"}</div>
                       <div className="text-sm text-muted-foreground">
-                        {customer.isAdmin ? "Admin User" : "Customer"}
+                        {customer.isAdmin ? "Администратор" : "Клиент"}
                       </div>
                     </div>
                   </div>
@@ -172,7 +155,7 @@ export default function CustomerDetailsPage() {
                     )}
                     <div className="flex items-center text-sm">
                       <Calendar className="mr-2 h-4 w-4 text-muted-foreground" />
-                      Last login: Last login: {customer.lastLogin ? format(customer.lastLogin, "PPP p") : "Never"}
+                      Последно влизане: {customer.lastLogin ? format(customer.lastLogin, "PPP p") : "Никога"}
                     </div>
                   </div>
                 </div>
@@ -181,162 +164,36 @@ export default function CustomerDetailsPage() {
 
             <Card className="md:col-span-2">
               <CardHeader>
-                <CardTitle>Customer Overview</CardTitle>
+                <CardTitle>Обобщение</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-3 gap-4">
-                  <div className="space-y-1">
-                    <div className="text-sm text-muted-foreground">Total Orders</div>
+                  <div>
+                    <div className="text-sm text-muted-foreground">Общо поръчки</div>
                     <div className="text-2xl font-bold">{orders.length}</div>
                   </div>
-                  <div className="space-y-1">
-                    <div className="text-sm text-muted-foreground">Total Spent</div>
+                  <div>
+                    <div className="text-sm text-muted-foreground">Обща сума</div>
                     <div className="text-2xl font-bold">{formatCurrency(totalSpent)}</div>
                   </div>
-                  <div className="space-y-1">
-                    <div className="text-sm text-muted-foreground">Average Order</div>
+                  <div>
+                    <div className="text-sm text-muted-foreground">Средна поръчка</div>
                     <div className="text-2xl font-bold">{formatCurrency(averageOrderValue)}</div>
                   </div>
                 </div>
 
-                <div className="mt-6 space-y-2">
-                  <div className="text-sm font-medium">Customer Since</div>
-                  <div>{customer.createdAt ? format(customer.createdAt, "PPP") : "N/A"}</div>
+                <div className="mt-6">
+                  <div className="text-sm font-medium">Потребител от</div>
+                  <div>{customer.createdAt ? format(customer.createdAt, "PPP") : "Няма информация"}</div>
                 </div>
 
-                <div className="mt-6 space-y-2">
-                  <div className="text-sm font-medium">First Order</div>
-                  <div>{firstOrderDate ? format(firstOrderDate, "PPP") : "No orders yet"}</div>
+                <div className="mt-6">
+                  <div className="text-sm font-medium">Първа поръчка</div>
+                  <div>{firstOrderDate ? format(firstOrderDate, "PPP") : "Няма поръчки"}</div>
                 </div>
               </CardContent>
             </Card>
           </div>
-
-          <Tabs defaultValue="orders" className="mt-6">
-            <TabsList>
-              <TabsTrigger value="orders">Order History</TabsTrigger>
-              <TabsTrigger value="addresses">Addresses</TabsTrigger>
-              <TabsTrigger value="notes">Notes</TabsTrigger>
-            </TabsList>
-            <TabsContent value="orders" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Order History</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {orders.length === 0 ? (
-                    <div className="text-center py-6">
-                      <Package className="mx-auto h-8 w-8 text-muted-foreground" />
-                      <p className="mt-2 text-sm text-muted-foreground">This customer has no orders yet.</p>
-                    </div>
-                  ) : (
-                    <div className="rounded-md border">
-                      <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
-                          <tr>
-                            <th
-                              scope="col"
-                              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                            >
-                              Order ID
-                            </th>
-                            <th
-                              scope="col"
-                              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                            >
-                              Date
-                            </th>
-                            <th
-                              scope="col"
-                              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                            >
-                              Status
-                            </th>
-                            <th
-                              scope="col"
-                              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                            >
-                              Total
-                            </th>
-                            <th
-                              scope="col"
-                              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                            >
-                              Actions
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
-                          {orders.map((order) => (
-                            <tr key={order.id}>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                {order.orderNumber || order.id}
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {order.createdAt ? formatShortDate(order.createdAt) : "N/A"}
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <Badge
-                                  variant={
-                                    order.status === "Delivered"
-                                      ? "default"
-                                      : order.status === "Shipped"
-                                        ? "secondary"
-                                        : order.status === "Cancelled"
-                                          ? "destructive"
-                                          : "outline"
-                                  }
-                                >
-                                  {order.status}
-                                </Badge>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {formatCurrency(order.total)}
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => router.push(`/admin/orders/${order.id}`)}
-                                >
-                                  View
-                                </Button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </TabsContent>
-            <TabsContent value="addresses">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Saved Addresses</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-6">
-                    <MapPin className="mx-auto h-8 w-8 text-muted-foreground" />
-                    <p className="mt-2 text-sm text-muted-foreground">No saved addresses found.</p>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-            <TabsContent value="notes">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Customer Notes</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-6">
-                    <p className="text-sm text-muted-foreground">No notes have been added for this customer.</p>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
         </main>
       </div>
     </ProtectedRoute>

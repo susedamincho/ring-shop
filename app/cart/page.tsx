@@ -135,7 +135,7 @@ export default function CartPage() {
                     </div>
                     {shipping === 0 && (
                       <div className="text-xs text-green-600">
-                        Безплатна доставка над ${settings.freeShippingThreshold}
+                        Безплатна доставка над {settings.freeShippingThreshold} лв.
                       </div>
                     )}
 

@@ -1,3 +1,5 @@
+// Файл: ProductFilters.tsx
+
 "use client"
 
 import { useEffect, useState } from "react"
@@ -32,7 +34,7 @@ import {
 import { cn } from "@/lib/utils"
 
 /* ------------------------------------------------------------------ */
-/*  props & helpers                                                   */
+/*  пропсове и помощни функции                                       */
 /* ------------------------------------------------------------------ */
 
 interface ProductFiltersProps {
@@ -41,20 +43,20 @@ interface ProductFiltersProps {
 type Price = [number, number]
 
 /* ------------------------------------------------------------------ */
-/*  component                                                         */
+/*  компонент                                                         */
 /* ------------------------------------------------------------------ */
 
 export default function ProductFilters({ categoryId }: ProductFiltersProps) {
-  /* ----------------------------------------------------  routing  -- */
+  /* ----------------------------------------------------  маршрутизация  -- */
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
-  /* ----------------------------------------------------  state  ---- */
+  /* ----------------------------------------------------  състояния  ---- */
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // fetched data
+  // заредени от базата
   const [categories, setCategories] = useState<Category[]>([])
   const [brands, setBrands] = useState<Brand[]>([])
   const [conditions, setConditions] = useState<AttributeItem[]>([])
@@ -62,7 +64,7 @@ export default function ProductFilters({ categoryId }: ProductFiltersProps) {
   const [carriers, setCarriers] = useState<AttributeItem[]>([])
   const [colors, setColors] = useState<AttributeItem[]>([])
 
-  // selected values (from URL or UI)
+  // избрани стойности (от URL или UI)
   const [priceRange, setPriceRange] = useState<Price>([0, 2000])
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [selectedBrands, setSelectedBrands] = useState<string[]>([])
@@ -71,7 +73,7 @@ export default function ProductFilters({ categoryId }: ProductFiltersProps) {
   const [selectedCarriers, setSelectedCarriers] = useState<string[]>([])
   const [selectedColors, setSelectedColors] = useState<string[]>([])
 
-  // ui toggles
+  // визуални състояния
   const [mobileOpen, setMobileOpen] = useState(false)
   const [expanded, setExpanded] = useState<Record<string, boolean>>({
     price: true,
@@ -83,17 +85,16 @@ export default function ProductFilters({ categoryId }: ProductFiltersProps) {
     color: true,
   })
 
-  /* ----------------------------------------------------  helpers -- */
+  /* ----------------------------------------------------  помощници  -- */
   const toggleSection = (key: string) =>
     setExpanded((p) => ({ ...p, [key]: !p[key] }))
 
-  /* ----------------------------------------------------  read URL -- */
-  // brand|condition|… query helpers (lower‑level portion of first file)
+  /* ----------------------------------------------------  четене на URL -- */
   const q = (key: string) => searchParams.get(key)?.split(",") || []
   const minPriceQ = searchParams.get("minPrice")
   const maxPriceQ = searchParams.get("maxPrice")
 
-  /* ----------------------------------------------------  fetch  ---- */
+  /* ----------------------------------------------------  зареждане на данни  ---- */
   useEffect(() => {
     const load = async () => {
       try {
@@ -122,15 +123,14 @@ export default function ProductFilters({ categoryId }: ProductFiltersProps) {
         setError(null)
       } catch (e) {
         console.error(e)
-        setError("Failed to load filters")
+        setError("Неуспешно зареждане на филтрите.")
       } finally {
         setLoading(false)
       }
     }
     load()
   }, [categoryId])
-
-  /* ----------------------------------------------------  init opts from URL  ---- */
+  /* ----------------------------------------------------  инициализация от URL  ---- */
   useEffect(() => {
     setSelectedCategories(q("categories"))
     setSelectedBrands(q("brands"))
@@ -148,7 +148,7 @@ export default function ProductFilters({ categoryId }: ProductFiltersProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams])
 
-  /* ----------------------------------------------------  apply filter helpers  ---- */
+  /* ----------------------------------------------------  помощници за прилагане на филтри  ---- */
   const setQueryArray = (key: string, arr: string[]) => {
     const params = new URLSearchParams(searchParams.toString())
     arr.length ? params.set(key, arr.join(",")) : params.delete(key)
@@ -174,7 +174,7 @@ export default function ProductFilters({ categoryId }: ProductFiltersProps) {
   const clearAll = () => router.push(pathname)
 
   /* ------------------------------------------------------------------ */
-  /*  derived                                                     */
+  /*  derived стойности                                                 */
   /* ------------------------------------------------------------------ */
   const activeCount =
     selectedCategories.length +
@@ -188,7 +188,7 @@ export default function ProductFilters({ categoryId }: ProductFiltersProps) {
   const hasActive = activeCount > 0
 
   /* ------------------------------------------------------------------ */
-  /*  loading / error skeletons                                    */
+  /*  скелетони за зареждане и грешки                                   */
   /* ------------------------------------------------------------------ */
   if (loading) {
     return (
@@ -205,9 +205,8 @@ export default function ProductFilters({ categoryId }: ProductFiltersProps) {
         {error}
       </div>
     )
-
   /* ------------------------------------------------------------------ */
-  /*  UI builder helpers (desktop & mobile reuse)                       */
+  /*  UI помощни компоненти (ползват се за desktop и mobile)            */
   /* ------------------------------------------------------------------ */
   type SectionProps = {
     id: string
@@ -285,7 +284,7 @@ export default function ProductFilters({ categoryId }: ProductFiltersProps) {
   )
 
   /* ------------------------------------------------------------------ */
-  /*  mobile drawer                                                     */
+  /*  Мобилен изглед с drawer                                          */
   /* ------------------------------------------------------------------ */
   const MobileDrawer = () => (
     <div className="lg:hidden">
@@ -295,7 +294,7 @@ export default function ProductFilters({ categoryId }: ProductFiltersProps) {
         onClick={() => setMobileOpen(true)}
       >
         <Filter className="h-4 w-4" />
-        Filters
+        Филтри
         {hasActive && (
           <span className="ml-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#0d9488] text-xs text-white">
             {activeCount}
@@ -310,11 +309,10 @@ export default function ProductFilters({ categoryId }: ProductFiltersProps) {
             onClick={() => setMobileOpen(false)}
           />
           <div className="relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto bg-[#0f172a] py-4 pb-12 shadow-xl">
-            {/* header */}
             <div className="flex items-center justify-between px-4">
               <h2 className="text-lg font-medium text-white flex items-center gap-2">
                 <Sliders className="h-5 w-5 text-[#0d9488]" />
-                Filters
+                Филтри
               </h2>
               <Button
                 variant="ghost"
@@ -326,7 +324,6 @@ export default function ProductFilters({ categoryId }: ProductFiltersProps) {
               </Button>
             </div>
 
-            {/* clear‑all */}
             {hasActive && (
               <div className="flex justify-end px-4 mt-2">
                 <Button
@@ -334,21 +331,20 @@ export default function ProductFilters({ categoryId }: ProductFiltersProps) {
                   className="text-[#0d9488] text-sm p-0 h-auto"
                   onClick={clearAll}
                 >
-                  Clear all
+                  Изчисти всички
                 </Button>
               </div>
             )}
-
-            {/* body */}
+            {/* съдържание на филтъра */}
             <div className="mt-4 border-t border-gray-700/50 px-4">
               <div className="py-6 space-y-6">
-                {/* price */}
+                {/* цена */}
                 <div>
                   <div
                     className="flex items-center justify-between cursor-pointer"
                     onClick={() => toggleSection("price")}
                   >
-                    <h3 className="text-sm font-medium text-white">Price Range</h3>
+                    <h3 className="text-sm font-medium text-white">Ценови диапазон</h3>
                     {expanded.price ? (
                       <ChevronUp className="h-4 w-4 text-gray-400" />
                     ) : (
@@ -369,20 +365,19 @@ export default function ProductFilters({ categoryId }: ProductFiltersProps) {
                       />
                       <div className="flex items-center justify-between">
                         <div className="rounded-md border text-white border-gray-700/50 bg-gray-800/50 px-3 py-1.5">
-                          ${priceRange[0]}
+                          {priceRange[0]} лв
                         </div>
                         <div className="rounded-md border border-gray-700/50 bg-gray-800/50 px-3 py-1.5">
-                          ${priceRange[1]}
+                          {priceRange[1]} лв
                         </div>
                       </div>
                     </div>
                   )}
                 </div>
 
-                {/* category */}
                 <Section
                   id="category"
-                  title="Category"
+                  title="Категория"
                   items={categories}
                   current={selectedCategories}
                   onToggle={(v) =>
@@ -391,10 +386,9 @@ export default function ProductFilters({ categoryId }: ProductFiltersProps) {
                   itemLabel={(c: Category) => c.name}
                 />
 
-                {/* brand */}
                 <Section
                   id="brand"
-                  title="Brand"
+                  title="Марка"
                   items={brands}
                   current={selectedBrands}
                   onToggle={(v) =>
@@ -403,10 +397,9 @@ export default function ProductFilters({ categoryId }: ProductFiltersProps) {
                   itemLabel={(b: Brand) => b.name}
                 />
 
-                {/* condition */}
                 <Section
                   id="condition"
-                  title="Condition"
+                  title="Състояние"
                   items={conditions}
                   current={selectedConditions}
                   onToggle={(v) =>
@@ -415,10 +408,9 @@ export default function ProductFilters({ categoryId }: ProductFiltersProps) {
                   itemLabel={(i: AttributeItem) => i.name}
                 />
 
-                {/* storage */}
                 <Section
                   id="storage"
-                  title="Storage"
+                  title="Памет"
                   items={storageOptions}
                   current={selectedStorage}
                   onToggle={(v) =>
@@ -427,10 +419,9 @@ export default function ProductFilters({ categoryId }: ProductFiltersProps) {
                   itemLabel={(i: AttributeItem) => i.name}
                 />
 
-                {/* carrier */}
                 <Section
                   id="carrier"
-                  title="Carrier"
+                  title="Оператор"
                   items={carriers}
                   current={selectedCarriers}
                   onToggle={(v) =>
@@ -439,10 +430,9 @@ export default function ProductFilters({ categoryId }: ProductFiltersProps) {
                   itemLabel={(i: AttributeItem) => i.name}
                 />
 
-                {/* colors */}
                 <Section
                   id="color"
-                  title="Color"
+                  title="Цвят"
                   items={colors}
                   current={selectedColors}
                   onToggle={(v) =>
@@ -458,18 +448,17 @@ export default function ProductFilters({ categoryId }: ProductFiltersProps) {
       )}
     </div>
   )
-
   /* ------------------------------------------------------------------ */
-  /*  desktop panel                                                     */
+  /*  десктоп панел                                                     */
   /* ------------------------------------------------------------------ */
   const DesktopPanel = () => (
     <div className="hidden lg:block">
       <div className="bg-[#0f172a]/80 backdrop-blur-lg border border-white/10 rounded-xl p-5 shadow-lg">
-        {/* header */}
+        {/* заглавие */}
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-medium text-white flex items-center gap-2">
             <Sliders className="h-5 w-5 text-[#0d9488]" />
-            Filters
+            Филтри
           </h2>
           {hasActive && (
             <Button
@@ -477,15 +466,14 @@ export default function ProductFilters({ categoryId }: ProductFiltersProps) {
               className="text-[#0d9488] text-sm p-0 h-auto"
               onClick={clearAll}
             >
-              Clear all
+              Изчисти всички
             </Button>
           )}
         </div>
 
-        {/* active chips */}
+        {/* активни чипове */}
         {hasActive && (
           <div className="mb-4 pb-4 border-b border-gray-700/50">
-            {/* each chip */}
             <div className="flex flex-wrap gap-2">
               {selectedCategories.map((id) => {
                 const cat = categories.find((c) => c.id === id)
@@ -523,12 +511,7 @@ export default function ProductFilters({ categoryId }: ProductFiltersProps) {
                   key={c}
                   label={c}
                   onRemove={() =>
-                    toggleItem(
-                      "conditions",
-                      c,
-                      selectedConditions,
-                      setSelectedConditions,
-                    )
+                    toggleItem("conditions", c, selectedConditions, setSelectedConditions)
                   }
                 />
               ))}
@@ -546,12 +529,7 @@ export default function ProductFilters({ categoryId }: ProductFiltersProps) {
                   key={c}
                   label={c}
                   onRemove={() =>
-                    toggleItem(
-                      "carriers",
-                      c,
-                      selectedCarriers,
-                      setSelectedCarriers,
-                    )
+                    toggleItem("carriers", c, selectedCarriers, setSelectedCarriers)
                   }
                 />
               ))}
@@ -580,14 +558,14 @@ export default function ProductFilters({ categoryId }: ProductFiltersProps) {
           </div>
         )}
 
-        {/* sections */}
-        {/* price */}
+        {/* секции */}
+        {/* цена */}
         <div className="py-4 border-b border-gray-700/50">
           <div
             className="flex items-center justify-between cursor-pointer"
             onClick={() => toggleSection("price")}
           >
-            <h3 className="text-sm font-medium text-white">Price Range</h3>
+            <h3 className="text-sm font-medium text-white">Ценови диапазон</h3>
             {expanded.price ? (
               <ChevronUp className="h-4 w-4 text-gray-400" />
             ) : (
@@ -608,21 +586,21 @@ export default function ProductFilters({ categoryId }: ProductFiltersProps) {
               />
               <div className="flex items-center justify-between">
                 <div className="rounded-md border border-gray-700/50 bg-gray-800/50 px-3 py-1.5">
-                  <span className="text-white">${priceRange[0]}</span>
+                  <span className="text-white">{priceRange[0]} лв</span>
                 </div>
                 <div className="rounded-md border border-gray-700/50 bg-gray-800/50 px-3 py-1.5">
-                  <span className="text-white">${priceRange[1]}</span>
+                  <span className="text-white">{priceRange[1]} лв</span>
                 </div>
               </div>
             </div>
           )}
         </div>
 
-        {/* category */}
+        {/* категория */}
         <div className="py-4 border-b border-gray-700/50">
           <Section
             id="category"
-            title="Category"
+            title="Категория"
             items={categories}
             current={selectedCategories}
             onToggle={(v) =>
@@ -632,11 +610,11 @@ export default function ProductFilters({ categoryId }: ProductFiltersProps) {
           />
         </div>
 
-        {/* brand */}
+        {/* марка */}
         <div className="py-4 border-b border-gray-700/50">
           <Section
             id="brand"
-            title="Brand"
+            title="Марка"
             items={brands}
             current={selectedBrands}
             onToggle={(v) =>
@@ -646,11 +624,11 @@ export default function ProductFilters({ categoryId }: ProductFiltersProps) {
           />
         </div>
 
-        {/* condition */}
+        {/* състояние */}
         <div className="py-4 border-b border-gray-700/50">
           <Section
             id="condition"
-            title="Condition"
+            title="Състояние"
             items={conditions}
             current={selectedConditions}
             onToggle={(v) =>
@@ -660,11 +638,11 @@ export default function ProductFilters({ categoryId }: ProductFiltersProps) {
           />
         </div>
 
-        {/* storage */}
+        {/* памет */}
         <div className="py-4 border-b border-gray-700/50">
           <Section
             id="storage"
-            title="Storage"
+            title="Памет"
             items={storageOptions}
             current={selectedStorage}
             onToggle={(v) =>
@@ -674,11 +652,11 @@ export default function ProductFilters({ categoryId }: ProductFiltersProps) {
           />
         </div>
 
-        {/* carrier */}
+        {/* оператор */}
         <div className="py-4 border-b border-gray-700/50">
           <Section
             id="carrier"
-            title="Carrier"
+            title="Оператор"
             items={carriers}
             current={selectedCarriers}
             onToggle={(v) =>
@@ -688,11 +666,11 @@ export default function ProductFilters({ categoryId }: ProductFiltersProps) {
           />
         </div>
 
-        {/* colors */}
+        {/* цвят */}
         <div className="py-4">
           <Section
             id="color"
-            title="Color"
+            title="Цвят"
             items={colors}
             current={selectedColors}
             onToggle={(v) =>
@@ -707,7 +685,7 @@ export default function ProductFilters({ categoryId }: ProductFiltersProps) {
   )
 
   /* ------------------------------------------------------------------ */
-  /*  chip helper component                                             */
+  /*  помощен компонент Chip (маркиране на избрани филтри)             */
   /* ------------------------------------------------------------------ */
   interface ChipProps {
     label: string
@@ -730,7 +708,7 @@ export default function ProductFilters({ categoryId }: ProductFiltersProps) {
   )
 
   /* ------------------------------------------------------------------ */
-  /*  render                                                            */
+  /*  render                                                           */
   /* ------------------------------------------------------------------ */
   return (
     <>

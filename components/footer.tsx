@@ -197,7 +197,7 @@ export default function Footer() {
                 </li>
                 <li className="mt-4">
                   <Link href="/contact" className="inline-flex items-center text-[#0d9488] hover:underline">
-                    Contact Us
+                  Свържете се с нас
                     <ArrowRight className="ml-1 h-4 w-4" />
                   </Link>
                 </li>

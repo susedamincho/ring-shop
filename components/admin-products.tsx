@@ -49,9 +49,7 @@ export default function AdminProducts({ filter = "all" }) {
       setLoading(true)
       const fetchedProducts = await getProducts()
 
-      // Apply filters
       let filteredProducts = fetchedProducts
-
       if (filter === "active") {
         filteredProducts = fetchedProducts.filter((product) => product.inventory > 0)
       } else if (filter === "out-of-stock") {
@@ -62,10 +60,10 @@ export default function AdminProducts({ filter = "all" }) {
 
       setProducts(filteredProducts)
     } catch (error) {
-      console.error("Error fetching products:", error)
+      console.error("Грешка при зареждане на продукти:", error)
       toast({
-        title: "Error",
-        description: "Failed to load products. Please try again.",
+        title: "Грешка",
+        description: "Неуспешно зареждане на продуктите. Опитайте отново.",
         variant: "destructive",
       })
     } finally {
@@ -82,20 +80,14 @@ export default function AdminProducts({ filter = "all" }) {
   }
 
   const handleSelectProduct = (productId) => {
-    if (selectedProducts.includes(productId)) {
-      setSelectedProducts(selectedProducts.filter((id) => id !== productId))
-    } else {
-      setSelectedProducts([...selectedProducts, productId])
-    }
+    setSelectedProducts((prev) =>
+      prev.includes(productId) ? prev.filter((id) => id !== productId) : [...prev, productId]
+    )
   }
 
-  const handleAddProduct = () => {
-    router.push("/admin/products/new")
-  }
+  const handleAddProduct = () => router.push("/admin/products/new")
 
-  const handleEditProduct = (productId) => {
-    router.push(`/admin/products/edit/${productId}`)
-  }
+  const handleEditProduct = (productId) => router.push(`/admin/products/edit/${productId}`)
 
   const confirmDeleteProduct = (product) => {
     setProductToDelete(product)
@@ -103,9 +95,7 @@ export default function AdminProducts({ filter = "all" }) {
   }
 
   const confirmBulkDelete = () => {
-    if (selectedProducts.length > 0) {
-      setBulkDeleteDialogOpen(true)
-    }
+    if (selectedProducts.length > 0) setBulkDeleteDialogOpen(true)
   }
 
   const handleDeleteProduct = async () => {
@@ -113,18 +103,14 @@ export default function AdminProducts({ filter = "all" }) {
 
     try {
       await deleteProduct(productToDelete.id)
-      setProducts(products.filter((product) => product.id !== productToDelete.id))
+      setProducts(products.filter((p) => p.id !== productToDelete.id))
       setSelectedProducts(selectedProducts.filter((id) => id !== productToDelete.id))
-
-      toast({
-        title: "Product deleted",
-        description: "The product has been deleted successfully.",
-      })
+      toast({ title: "Продуктът е изтрит", description: "Успешно изтрит продукт." })
     } catch (error) {
-      console.error("Error deleting product:", error)
+      console.error("Грешка при изтриване на продукт:", error)
       toast({
-        title: "Error",
-        description: "Failed to delete product. Please try again.",
+        title: "Грешка",
+        description: "Неуспешно изтриване на продукта. Опитайте отново.",
         variant: "destructive",
       })
     } finally {
@@ -135,23 +121,18 @@ export default function AdminProducts({ filter = "all" }) {
 
   const handleBulkDelete = async () => {
     try {
-      // Delete each selected product
-      for (const productId of selectedProducts) {
-        await deleteProduct(productId)
-      }
-
-      setProducts(products.filter((product) => !selectedProducts.includes(product.id)))
-      setSelectedProducts([])
-
+      for (const id of selectedProducts) await deleteProduct(id)
+      setProducts(products.filter((p) => !selectedProducts.includes(p.id)))
       toast({
-        title: "Products deleted",
-        description: `${selectedProducts.length} products have been deleted successfully.`,
+        title: "Продуктите са изтрити",
+        description: `${selectedProducts.length} продукта бяха успешно изтрити.`,
       })
+      setSelectedProducts([])
     } catch (error) {
-      console.error("Error deleting selected products:", error)
+      console.error("Грешка при масово изтриване:", error)
       toast({
-        title: "Error",
-        description: "Failed to delete some products. Please try again.",
+        title: "Грешка",
+        description: "Неуспешно изтриване на някои продукти. Опитайте отново.",
         variant: "destructive",
       })
     } finally {
@@ -160,13 +141,9 @@ export default function AdminProducts({ filter = "all" }) {
   }
 
   const getProductStatus = (inventory) => {
-    if (inventory === 0) {
-      return "Out of Stock"
-    } else if (inventory < 10) {
-      return "Low Stock"
-    } else {
-      return "In Stock"
-    }
+    if (inventory === 0) return "Изчерпано"
+    if (inventory < 10) return "Ограничено"
+    return "В наличност"
   }
 
   if (loading) {
@@ -180,23 +157,21 @@ export default function AdminProducts({ filter = "all" }) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm text-muted-foreground">
-            {selectedProducts.length > 0
-              ? `${selectedProducts.length} of ${products.length} products selected`
-              : `${products.length} products`}
-          </p>
-        </div>
+        <p className="text-sm text-muted-foreground">
+          {selectedProducts.length > 0
+            ? `${selectedProducts.length} от ${products.length} избрани`
+            : `${products.length} продукта`}
+        </p>
         <div className="flex items-center gap-2">
           {selectedProducts.length > 0 && (
             <Button variant="outline" className="text-red-500" onClick={confirmBulkDelete}>
               <Trash className="mr-2 h-4 w-4" />
-              Изтриване на избраното
+              Изтрий избраните
             </Button>
           )}
           <Button onClick={handleAddProduct}>
             <Plus className="mr-2 h-4 w-4" />
-            Добавете продукт
+            Добави продукт
           </Button>
         </div>
       </div>
@@ -211,19 +186,19 @@ export default function AdminProducts({ filter = "all" }) {
                   onCheckedChange={handleSelectAll}
                 />
               </TableHead>
-              <TableHead>Product</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Price</TableHead>
-              <TableHead>Inventory</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>Продукт</TableHead>
+              <TableHead>Категории</TableHead>
+              <TableHead>Цена</TableHead>
+              <TableHead>Наличност</TableHead>
+              <TableHead>Статус</TableHead>
+              <TableHead className="text-right">Действия</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {products.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={7} className="text-center py-8">
-                  No products found.
+                  Няма намерени продукти.
                 </TableCell>
               </TableRow>
             ) : (
@@ -245,7 +220,7 @@ export default function AdminProducts({ filter = "all" }) {
                     )}
                     <span>{product.name}</span>
                   </TableCell>
-                  <TableCell>{product.categoryIds ? product.categoryIds.length : 0} categories</TableCell>
+                  <TableCell>{product.categoryIds?.length || 0} категории</TableCell>
                   <TableCell>{formatCurrency(product.price)}</TableCell>
                   <TableCell>{product.inventory}</TableCell>
                   <TableCell>
@@ -254,8 +229,8 @@ export default function AdminProducts({ filter = "all" }) {
                         product.inventory === 0
                           ? "bg-red-100 text-red-800"
                           : product.inventory < 10
-                            ? "bg-yellow-100 text-yellow-800"
-                            : "bg-green-100 text-green-800"
+                          ? "bg-yellow-100 text-yellow-800"
+                          : "bg-green-100 text-green-800"
                       }`}
                     >
                       {getProductStatus(product.inventory)}
@@ -266,19 +241,19 @@ export default function AdminProducts({ filter = "all" }) {
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon">
                           <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Actions</span>
+                          <span className="sr-only">Действия</span>
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuLabel>Действия</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={() => handleEditProduct(product.id)}>
                           <Edit className="mr-2 h-4 w-4" />
-                          Edit
+                          Редактирай
                         </DropdownMenuItem>
                         <DropdownMenuItem className="text-red-600" onClick={() => confirmDeleteProduct(product)}>
                           <Trash className="mr-2 h-4 w-4" />
-                          Delete
+                          Изтрий
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -290,37 +265,37 @@ export default function AdminProducts({ filter = "all" }) {
         </Table>
       </div>
 
-      {/* Delete Confirmation Dialog */}
+      {/* Потвърждение за изтриване */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>Сигурни ли сте?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete the product "{productToDelete?.name}". This action cannot be undone.
+              Това ще изтрие продукта „{productToDelete?.name}“ завинаги. Това действие е необратимо.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>Отказ</AlertDialogCancel>
             <AlertDialogAction onClick={handleDeleteProduct} className="bg-red-600 hover:bg-red-700">
-              Delete
+              Изтрий
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Bulk Delete Confirmation Dialog */}
+      {/* Потвърждение за масово изтриване */}
       <AlertDialog open={bulkDeleteDialogOpen} onOpenChange={setBulkDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>Сигурни ли сте?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete {selectedProducts.length} selected products. This action cannot be undone.
+              Това ще изтрие {selectedProducts.length} избрани продукта. Това действие е необратимо.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>Отказ</AlertDialogCancel>
             <AlertDialogAction onClick={handleBulkDelete} className="bg-red-600 hover:bg-red-700">
-              Delete All
+              Изтрий всички
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

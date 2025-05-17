@@ -23,7 +23,7 @@ export default function AdminCustomersPage() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-              <Button variant="outline">Export</Button>
+              <Button variant="outline">Експорт</Button>
             </div>
           </div>
         </header>

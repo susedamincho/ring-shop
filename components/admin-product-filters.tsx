@@ -24,7 +24,6 @@ export default function AdminProductFilters({ onFilterChange }) {
   const [brands, setBrands] = useState([])
   const [loading, setLoading] = useState(true)
 
-  // Fetch categories and brands on component mount
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -33,7 +32,7 @@ export default function AdminProductFilters({ onFilterChange }) {
         setCategories(fetchedCategories)
         setBrands(fetchedBrands)
       } catch (error) {
-        console.error("Error fetching filter data:", error)
+        console.error("Грешка при зареждане на филтрите:", error)
       } finally {
         setLoading(false)
       }
@@ -42,12 +41,10 @@ export default function AdminProductFilters({ onFilterChange }) {
     fetchData()
   }, [])
 
-  // Update search term and notify parent component
   const handleSearchChange = (e) => {
     const value = e.target.value
     setSearchTerm(value)
 
-    // Debounce search to avoid too many updates
     const timeoutId = setTimeout(() => {
       applyFilters({ search: value })
     }, 300)
@@ -77,7 +74,6 @@ export default function AdminProductFilters({ onFilterChange }) {
   }
 
   const applyFilters = (additionalFilters = {}) => {
-    // Combine all filters
     const filters = {
       search: searchTerm,
       categories: selectedCategories,
@@ -89,7 +85,6 @@ export default function AdminProductFilters({ onFilterChange }) {
       ...additionalFilters,
     }
 
-    // Call the provided onFilterChange function
     if (typeof onFilterChange === "function") {
       onFilterChange(filters)
     }
@@ -100,20 +95,23 @@ export default function AdminProductFilters({ onFilterChange }) {
     setSelectedCategories([])
     setSelectedBrands([])
     setPriceRange({ min: "", max: "" })
-
-    // Apply cleared filters
     applyFilters({ search: "", categories: [], brands: [], priceRange: { min: null, max: null } })
   }
 
   return (
     <div className="flex items-center gap-2">
-      <Input placeholder="Search products..." value={searchTerm} onChange={handleSearchChange} className="w-[250px]" />
+      <Input
+        placeholder="Търсене на продукти..."
+        value={searchTerm}
+        onChange={handleSearchChange}
+        className="w-[250px]"
+      />
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="sm">
             <Filter className="mr-2 h-4 w-4" />
-            Filter
+            Филтрирай
             {(selectedCategories.length > 0 || selectedBrands.length > 0 || priceRange.min || priceRange.max) && (
               <span className="ml-1 rounded-full bg-primary w-5 h-5 text-xs flex items-center justify-center text-primary-foreground">
                 {selectedCategories.length + selectedBrands.length + (priceRange.min || priceRange.max ? 1 : 0)}
@@ -122,25 +120,25 @@ export default function AdminProductFilters({ onFilterChange }) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56">
-          <DropdownMenuLabel>Filter Products</DropdownMenuLabel>
+          <DropdownMenuLabel>Филтрирай продукти</DropdownMenuLabel>
           <DropdownMenuSeparator />
 
           <div className="p-2">
-            <h4 className="mb-2 text-sm font-medium">Price Range</h4>
+            <h4 className="mb-2 text-sm font-medium">Ценови диапазон</h4>
             <div className="flex items-center gap-2">
-              <Input placeholder="Min" name="min" value={priceRange.min} onChange={handlePriceChange} className="h-8" />
+              <Input placeholder="Мин." name="min" value={priceRange.min} onChange={handlePriceChange} className="h-8" />
               <span>-</span>
-              <Input placeholder="Max" name="max" value={priceRange.max} onChange={handlePriceChange} className="h-8" />
+              <Input placeholder="Макс." name="max" value={priceRange.max} onChange={handlePriceChange} className="h-8" />
             </div>
           </div>
 
           <DropdownMenuSeparator />
-          <DropdownMenuLabel>Categories</DropdownMenuLabel>
+          <DropdownMenuLabel>Категории</DropdownMenuLabel>
 
           {loading ? (
-            <div className="px-2 py-1 text-sm">Loading categories...</div>
+            <div className="px-2 py-1 text-sm">Зареждане...</div>
           ) : categories.length === 0 ? (
-            <div className="px-2 py-1 text-sm">No categories available</div>
+            <div className="px-2 py-1 text-sm">Няма налични категории</div>
           ) : (
             categories.map((category) => (
               <DropdownMenuCheckboxItem
@@ -154,12 +152,12 @@ export default function AdminProductFilters({ onFilterChange }) {
           )}
 
           <DropdownMenuSeparator />
-          <DropdownMenuLabel>Brands</DropdownMenuLabel>
+          <DropdownMenuLabel>Марки</DropdownMenuLabel>
 
           {loading ? (
-            <div className="px-2 py-1 text-sm">Loading brands...</div>
+            <div className="px-2 py-1 text-sm">Зареждане...</div>
           ) : brands.length === 0 ? (
-            <div className="px-2 py-1 text-sm">No brands available</div>
+            <div className="px-2 py-1 text-sm">Няма налични марки</div>
           ) : (
             brands.map((brand) => (
               <DropdownMenuCheckboxItem
@@ -175,10 +173,10 @@ export default function AdminProductFilters({ onFilterChange }) {
           <DropdownMenuSeparator />
           <div className="p-2 flex gap-2">
             <Button size="sm" className="w-full" onClick={() => applyFilters()}>
-              Apply
+              Приложи
             </Button>
             <Button size="sm" variant="outline" className="w-full" onClick={clearFilters}>
-              Clear
+              Изчисти
             </Button>
           </div>
         </DropdownMenuContent>

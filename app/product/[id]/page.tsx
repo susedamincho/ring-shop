@@ -105,7 +105,7 @@ export default async function ProductPage(props: ProductPageProps) {
                     </div>
                     <div className="p-4">
                       <h3 className="text-white font-medium line-clamp-1">{product.name}</h3>
-                      <p className="text-[#0d9488] font-bold mt-2">${product.price.toFixed(2)}</p>
+                      <p className="text-[#0d9488] font-bold mt-2">{product.price.toFixed(2)} лв.</p>
                     </div>
                   </div>
                 </a>

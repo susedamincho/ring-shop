@@ -35,10 +35,7 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
     const [isFavorite, setIsFavorite] = useState(false)
     const [activeTab, setActiveTab] = useState("description")
 
-    // Combine main image with additional images
     const allImages = [product.image || "/placeholder.svg", ...(product.additionalImages || [])].filter(Boolean)
-
-    // If no additional images, create duplicates for the gallery
     const displayImages =
         allImages.length > 1 ? allImages : [product.image || "/placeholder.svg", product.image || "/placeholder.svg"]
 
@@ -73,7 +70,7 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                 .catch(console.error)
         } else {
             navigator.clipboard.writeText(window.location.href)
-            alert("Link copied to clipboard!")
+            alert("Линкът е копиран в клипборда!")
         }
     }
 
@@ -81,25 +78,24 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
         router.back()
     }
 
-
     return (
         <div className="container mx-auto px-4 py-8">
-            {/* Breadcrumb */}
+            {/* Навигация */}
             <div className="flex items-center space-x-2 text-sm text-gray-400 mb-8">
                 <button onClick={goBack} className="flex items-center hover:text-[#0d9488] transition-colors">
                     <ChevronLeft className="h-4 w-4 mr-1" />
-                    Back
+                    Назад
                 </button>
                 <span>/</span>
                 <a href="/products" className="hover:text-[#0d9488] transition-colors">
-                    Products
+                    Продукти
                 </a>
                 <span>/</span>
                 <span className="text-white">{product.name}</span>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                {/* Product Images */}
+                {/* Изображения на продукта */}
                 <div className="space-y-6">
                     <div className="relative overflow-hidden rounded-2xl bg-[#1e293b] border border-white/10 aspect-square">
                         <img
@@ -125,8 +121,7 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                             </>
                         )}
                     </div>
-
-                    {/* Thumbnails */}
+                    {/* Миниатюри */}
                     {displayImages.length > 1 && (
                         <div className="flex space-x-4 overflow-x-auto pb-2 scrollbar-hide">
                             {displayImages.map((image, index) => (
@@ -140,7 +135,7 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                                 >
                                     <img
                                         src={image || "/placeholder.svg"}
-                                        alt={`Thumbnail ${index + 1}`}
+                                        alt={`Миниатюра ${index + 1}`}
                                         className="w-full h-full object-cover"
                                     />
                                 </button>
@@ -149,7 +144,7 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                     )}
                 </div>
 
-                {/* Product Details */}
+                {/* Детайли за продукта */}
                 <div className="space-y-8">
                     <div>
                         {product.brand && <div className="text-[#0d9488] font-medium mb-2">{product.brand}</div>}
@@ -162,31 +157,31 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                                     <span className="text-xl text-gray-400 line-through">
                                         {formatCurrency(product.price * (1 + product.discount / 100))}
                                     </span>
-                                    <Badge className="bg-[#0d9488] text-white">Save {product.discount}%</Badge>
+                                    <Badge className="bg-[#0d9488] text-white">Спестявате {product.discount}%</Badge>
                                 </>
                             )}
                         </div>
                     </div>
 
-                    {/* Specifications */}
+                    {/* Спецификации */}
                     <div className="grid grid-cols-2 gap-4 bg-[#1e293b]/50 backdrop-blur-sm rounded-xl p-4 border border-white/10">
                         {product.model && (
                             <div>
-                                <h3 className="text-sm font-medium text-gray-400">Model</h3>
+                                <h3 className="text-sm font-medium text-gray-400">Модел</h3>
                                 <p className="text-white">{product.model}</p>
                             </div>
                         )}
 
                         {product.storage && (
                             <div>
-                                <h3 className="text-sm font-medium text-gray-400">Storage</h3>
+                                <h3 className="text-sm font-medium text-gray-400">Памет</h3>
                                 <p className="text-white">{product.storage}</p>
                             </div>
                         )}
 
                         {product.condition && (
                             <div>
-                                <h3 className="text-sm font-medium text-gray-400">Condition</h3>
+                                <h3 className="text-sm font-medium text-gray-400">Състояние</h3>
                                 <Badge
                                     variant="outline"
                                     className={`
@@ -204,14 +199,14 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
 
                         {product.carrier && (
                             <div>
-                                <h3 className="text-sm font-medium text-gray-400">Carrier</h3>
+                                <h3 className="text-sm font-medium text-gray-400">Оператор</h3>
                                 <p className="text-white">{product.carrier}</p>
                             </div>
                         )}
 
                         {product.color && (
                             <div>
-                                <h3 className="text-sm font-medium text-gray-400">Color</h3>
+                                <h3 className="text-sm font-medium text-gray-400">Цвят</h3>
                                 <div className="flex items-center">
                                     <div
                                         className="h-4 w-4 rounded-full mr-2 border border-white/20"
@@ -249,13 +244,12 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
 
                         {product.batteryHealth && (
                             <div>
-                                <h3 className="text-sm font-medium text-gray-400">Battery Health</h3>
+                                <h3 className="text-sm font-medium text-gray-400">Състояние на батерията</h3>
                                 <p className="text-white">{product.batteryHealth}</p>
                             </div>
                         )}
                     </div>
-
-                    {/* Add to Cart */}
+                    {/* Добавяне в количка */}
                     <div className="space-y-6">
                         <div className="flex items-center space-x-4">
                             <div className="flex items-center border border-white/20 rounded-lg">
@@ -276,7 +270,7 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
 
                             <Button className="flex-1 h-10 bg-[#0d9488] hover:bg-[#0d9488]/80 text-white" onClick={handleAddToCart}>
                                 <ShoppingCart className="mr-2 h-4 w-4" />
-                                Add to Cart
+                                Добави в количката
                             </Button>
 
                             <Button
@@ -289,15 +283,15 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                             </Button>
                         </div>
 
-                        {/* Shipping & Returns */}
+                        {/* Доставка и връщане */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div className="flex items-center space-x-3 bg-[#1e293b]/30 backdrop-blur-sm p-3 rounded-lg border border-white/10">
                                 <div className="h-10 w-10 rounded-full bg-[#0d9488]/10 flex items-center justify-center">
                                     <Truck className="h-5 w-5 text-[#0d9488]" />
                                 </div>
                                 <div>
-                                    <h3 className="text-sm font-medium text-white">Free Shipping</h3>
-                                    <p className="text-xs text-gray-400">On orders over $100</p>
+                                    <h3 className="text-sm font-medium text-white">Безплатна доставка</h3>
+                                    <p className="text-xs text-gray-400">За поръчки над 100 лв.</p>
                                 </div>
                             </div>
 
@@ -306,8 +300,8 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                                     <Shield className="h-5 w-5 text-[#0d9488]" />
                                 </div>
                                 <div>
-                                    <h3 className="text-sm font-medium text-white">1 Year Warranty</h3>
-                                    <p className="text-xs text-gray-400">Full coverage</p>
+                                    <h3 className="text-sm font-medium text-white">1 година гаранция</h3>
+                                    <p className="text-xs text-gray-400">Пълно покритие</p>
                                 </div>
                             </div>
 
@@ -316,8 +310,8 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                                     <RotateCcw className="h-5 w-5 text-[#0d9488]" />
                                 </div>
                                 <div>
-                                    <h3 className="text-sm font-medium text-white">30-Day Returns</h3>
-                                    <p className="text-xs text-gray-400">Hassle-free returns</p>
+                                    <h3 className="text-sm font-medium text-white">30 дни връщане</h3>
+                                    <p className="text-xs text-gray-400">Безпроблемно връщане</p>
                                 </div>
                             </div>
                         </div>
@@ -325,18 +319,18 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                 </div>
             </div>
 
-            {/* Product Tabs */}
+            {/* Табове с информация */}
             <div className="mt-16">
                 <Tabs defaultValue="description" className="w-full" onValueChange={setActiveTab}>
                     <TabsList className="grid w-full grid-cols-3 bg-[#1e293b]/50 backdrop-blur-sm rounded-lg">
                         <TabsTrigger value="description" className={activeTab === "description" ? "text-[#0d9488]" : "text-white"}>
-                            Description
+                            Описание
                         </TabsTrigger>
                         <TabsTrigger
                             value="specifications"
                             className={activeTab === "specifications" ? "text-[#0d9488]" : "text-white"}
                         >
-                            Specifications
+                            Спецификации
                         </TabsTrigger>
                     </TabsList>
 
@@ -345,7 +339,7 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                         className="mt-6 bg-[#1e293b]/30 backdrop-blur-sm rounded-xl p-6 border border-white/10"
                     >
                         <div className="prose prose-invert max-w-none">
-                            <p className="text-gray-300 leading-relaxed">{product.description || "No description available."}</p>
+                            <p className="text-gray-300 leading-relaxed">{product.description || "Няма налично описание."}</p>
                         </div>
                     </TabsContent>
 
@@ -355,41 +349,41 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                     >
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <h3 className="text-lg font-medium text-white mb-4">Technical Specifications</h3>
+                                <h3 className="text-lg font-medium text-white mb-4">Технически характеристики</h3>
                                 <ul className="space-y-3">
                                     {product.model && (
                                         <li className="flex justify-between">
-                                            <span className="text-gray-400">Model</span>
+                                            <span className="text-gray-400">Модел</span>
                                             <span className="text-white font-medium">{product.model}</span>
                                         </li>
                                     )}
                                     {product.storage && (
                                         <li className="flex justify-between">
-                                            <span className="text-gray-400">Storage</span>
+                                            <span className="text-gray-400">Памет</span>
                                             <span className="text-white font-medium">{product.storage}</span>
                                         </li>
                                     )}
                                     {product.color && (
                                         <li className="flex justify-between">
-                                            <span className="text-gray-400">Color</span>
+                                            <span className="text-gray-400">Цвят</span>
                                             <span className="text-white font-medium">{product.color}</span>
                                         </li>
                                     )}
                                     {product.carrier && (
                                         <li className="flex justify-between">
-                                            <span className="text-gray-400">Carrier</span>
+                                            <span className="text-gray-400">Оператор</span>
                                             <span className="text-white font-medium">{product.carrier}</span>
                                         </li>
                                     )}
                                     {product.batteryHealth && (
                                         <li className="flex justify-between">
-                                            <span className="text-gray-400">Battery Health</span>
+                                            <span className="text-gray-400">Състояние на батерията</span>
                                             <span className="text-white font-medium">{product.batteryHealth}</span>
                                         </li>
                                     )}
                                     {product.imeiNumber && (
                                         <li className="flex justify-between">
-                                            <span className="text-gray-400">IMEI Number</span>
+                                            <span className="text-gray-400">IMEI номер</span>
                                             <span className="text-white font-medium">{product.imeiNumber}</span>
                                         </li>
                                     )}
@@ -397,7 +391,7 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                             </div>
 
                             <div>
-                                <h3 className="text-lg font-medium text-white mb-4">Features</h3>
+                                <h3 className="text-lg font-medium text-white mb-4">Функции</h3>
                                 {product.features && product.features.length > 0 ? (
                                     <ul className="space-y-2">
                                         {product.features.map((feature, index) => (
@@ -408,12 +402,12 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                                         ))}
                                     </ul>
                                 ) : (
-                                    <p className="text-gray-400">No feature details available.</p>
+                                    <p className="text-gray-400">Няма информация за функции.</p>
                                 )}
 
                                 {product.accessories && product.accessories.length > 0 && (
                                     <div className="mt-6">
-                                        <h3 className="text-lg font-medium text-white mb-4">Included Accessories</h3>
+                                        <h3 className="text-lg font-medium text-white mb-4">Включени аксесоари</h3>
                                         <ul className="space-y-2">
                                             {product.accessories.map((accessory, index) => (
                                                 <li key={index} className="flex items-start">

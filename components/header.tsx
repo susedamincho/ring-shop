@@ -1,4 +1,4 @@
-"use client"
+// "use client"
 
 import type React from "react"
 
@@ -39,9 +39,6 @@ export default function Header() {
 
   const cartItemCount = cart.reduce((t, i) => t + i.quantity, 0)
 
-  /* ------------------------------------------------------------------
-   * Fetch data once at mount
-   * -----------------------------------------------------------------*/
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -51,54 +48,36 @@ export default function Header() {
         setStoreInfo(settings)
         setError(null)
       } catch (err) {
-        console.error("Error fetching header data:", err)
-        setError("Failed to load navigation data. Please try refreshing the page.")
+        console.error("Грешка при зареждане на данни:", err)
+        setError("Грешка при зареждане на навигацията. Презаредете страницата.")
       } finally {
         setIsLoading(false)
       }
     }
     fetchData()
 
-    /* sticky‑header shading on scroll */
     const handleScroll = () => setScrolled(window.scrollY > 10)
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  /* ------------------------------------------------------------------
-   * Build nav list – only categories that have featured === true
-   * Memoised so we don’t recalc on every rerender
-   * -----------------------------------------------------------------*/
   const navItems: NavItem[] = useMemo(() => {
-    // show defaults while loading or on error
     const defaults: NavItem[] = [
-      { label: "New Phones", href: "/products?condition=New" },
-      {
-        label: "Refurbished",
-        href: "/products?condition=Refurbished,Like%20New,Excellent,Good",
-      },
-      { label: "Accessories", href: "/categories" },
-      { label: "Deals", href: "/products?onSale=true" },
+      { label: "Нови телефони", href: "/products?condition=New" },
+      { label: "Реновирани", href: "/products?condition=Refurbished,Like%20New,Excellent,Good" },
+      { label: "Аксесоари", href: "/categories" },
+      { label: "Промоции", href: "/products?onSale=true" },
     ]
-
     if (isLoading || error) return defaults
-
     const featured = categories.filter((c) => c.featured)
     if (!featured.length) return defaults
-
-    /* map <Category> → <NavItem> */
     const items = featured.map((cat) => ({
       label: cat.name,
       href: `/category/${cat.slug}`,
     }))
-
-    // optional extra links
     items.push({ label: "Всички категории", href: "/categories" })
-
     return items
   }, [categories, isLoading, error])
-
-  /* ------------------------------------------------------------------*/
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -109,21 +88,18 @@ export default function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 w-full text-white transition-all duration-300 ${scrolled ? "bg-[#0f172a]/90 backdrop-blur-md shadow-sm" : "bg-[#0f172a]"
-        }`}
+      className={`sticky top-0 z-50 w-full text-white transition-all duration-300 ${
+        scrolled ? "bg-[#0f172a]/90 backdrop-blur-md shadow-sm" : "bg-[#0f172a]"
+      }`}
     >
       <div className="container px-4 md:px-6 mx-auto">
         <div className="flex h-16 items-center justify-between">
-          {/* ------------------------------------------------------------------
-           *  Left:  Logo + nav
-           * -----------------------------------------------------------------*/}
           <div className="flex items-center">
-            {/* mobile drawer trigger */}
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="md:hidden">
                   <Menu className="h-6 w-6" />
-                  <span className="sr-only">Toggle menu</span>
+                  <span className="sr-only">Меню</span>
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="w-[300px] sm:w-[400px]">
@@ -131,7 +107,6 @@ export default function Header() {
               </SheetContent>
             </Sheet>
 
-            {/* logo */}
             <Link href="/" className="mr-6 flex items-center space-x-2">
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#0d9488] to-[#0f172a] flex items-center justify-center text-white font-bold text-lg">
                 RS
@@ -139,10 +114,8 @@ export default function Header() {
               <span className="text-xl font-bold hidden sm:inline-block">{storeInfo?.storeName || "PhoneStore"}</span>
             </Link>
 
-            {/* desktop nav */}
             <nav className="hidden md:flex items-center space-x-8 text-sm font-medium">
               {isLoading ? (
-                /* skeletons */
                 <>
                   {[1, 2, 3, 4].map((i) => (
                     <div key={i} className="h-4 bg-gray-200 rounded w-16 animate-pulse"></div>
@@ -153,8 +126,9 @@ export default function Header() {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`transition-colors hover:text-[#0d9488] ${pathname === item.href ? "text-[#0d9488] font-semibold" : ""
-                      }`}
+                    className={`transition-colors hover:text-[#0d9488] ${
+                      pathname === item.href ? "text-[#0d9488] font-semibold" : ""
+                    }`}
                   >
                     {item.label}
                   </Link>
@@ -163,16 +137,12 @@ export default function Header() {
             </nav>
           </div>
 
-          {/* ------------------------------------------------------------------
-           *  Right:  search + account + cart
-           * -----------------------------------------------------------------*/}
           <div className="flex items-center space-x-4">
-            {/* search */}
             {searchOpen ? (
               <form onSubmit={handleSearch} className="relative">
                 <Input
                   type="search"
-                  placeholder="Search products..."
+                  placeholder="Търси продукти..."
                   className="w-[200px] md:w-[300px] rounded-full pr-10"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
@@ -180,7 +150,7 @@ export default function Header() {
                 />
                 <Button type="submit" variant="ghost" size="icon" className="absolute right-0 top-0 h-full">
                   <Search className="h-4 w-4" />
-                  <span className="sr-only">Search</span>
+                  <span className="sr-only">Търси</span>
                 </Button>
                 <Button
                   type="button"
@@ -190,7 +160,7 @@ export default function Header() {
                   onClick={() => setSearchOpen(false)}
                 >
                   <X className="h-4 w-4" />
-                  <span className="sr-only">Close search</span>
+                  <span className="sr-only">Затвори</span>
                 </Button>
               </form>
             ) : (
@@ -200,12 +170,11 @@ export default function Header() {
               </Button>
             )}
 
-            {/* account dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon">
                   <User className="h-5 w-5" />
-                  <span className="sr-only">акаунт</span>
+                  <span className="sr-only">Акаунт</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
@@ -226,34 +195,22 @@ export default function Header() {
                       </div>
                     </div>
                     <div className="p-2">
-                      <Link
-                        href="/account"
-                        className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm hover:bg-[#0d9488]/10 transition-colors"
-                      >
+                      <Link href="/account" className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm hover:bg-[#0d9488]/10">
                         <User className="h-4 w-4 text-[#0d9488]" />
-                        <span>Account</span>
+                        <span>Профил</span>
                       </Link>
-                      <Link
-                        href="/account/orders"
-                        className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm hover:bg-[#0d9488]/10 transition-colors"
-                      >
+                      <Link href="/account/orders" className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm hover:bg-[#0d9488]/10">
                         <Package className="h-4 w-4 text-[#0d9488]" />
-                        <span>Orders</span>
+                        <span>Поръчки</span>
                       </Link>
-                      <Link
-                        href="/notifications"
-                        className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm hover:bg-[#0d9488]/10 transition-colors"
-                      >
+                      <Link href="/notifications" className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm hover:bg-[#0d9488]/10">
                         <Bell className="h-4 w-4 text-[#0d9488]" />
-                        <span>Notifications</span>
+                        <span>Известия</span>
                       </Link>
                       {isAdmin && (
-                        <Link
-                          href="/admin"
-                          className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm hover:bg-[#0d9488]/10 transition-colors"
-                        >
+                        <Link href="/admin" className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm hover:bg-[#0d9488]/10">
                           <Package className="h-4 w-4 text-[#0d9488]" />
-                          <span>Admin Dashboard</span>
+                          <span>Админ панел</span>
                         </Link>
                       )}
                     </div>
@@ -263,7 +220,7 @@ export default function Header() {
                         className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 transition-colors"
                       >
                         <LogOut className="h-4 w-4" />
-                        <span>Излезте</span>
+                        <span>Изход</span>
                       </button>
                     </div>
                   </>
@@ -279,14 +236,13 @@ export default function Header() {
                       href="/register"
                       className="flex w-full items-center justify-center gap-2 rounded-lg border border-[#0d9488]/50 bg-transparent px-3 py-2 text-sm font-medium text-white hover:bg-[#0d9488]/10 transition-colors"
                     >
-                     Създаване на акаунт
+                      Създай акаунт
                     </Link>
                   </div>
                 )}
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* cart */}
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="relative">
@@ -296,7 +252,7 @@ export default function Header() {
                       {cartItemCount}
                     </Badge>
                   )}
-                  <span className="sr-only">Отворете количката</span>
+                  <span className="sr-only">Количка</span>
                 </Button>
               </SheetTrigger>
               <SheetContent className="w-full m-0 p-0 sm:max-w-md">

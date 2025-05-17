@@ -1,3 +1,5 @@
+// файл: RegisterPage.tsx
+
 "use client"
 
 import type React from "react"
@@ -29,35 +31,33 @@ export default function RegisterPage() {
 
   const validateForm = () => {
     if (!name.trim()) {
-      setError("Name is required")
+      setError("Полето за име е задължително")
       return false
     }
 
     if (!email.trim()) {
-      setError("Email is required")
+      setError("Полето за имейл е задължително")
       return false
     }
 
     if (!password) {
-      setError("Password is required")
+      setError("Полето за парола е задължително")
       return false
     }
 
     if (password !== confirmPassword) {
-      setError("Passwords don't match")
+      setError("Паролите не съвпадат")
       return false
     }
 
-    // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
-      setError("Please enter a valid email address")
+      setError("Моля, въведете валиден имейл адрес")
       return false
     }
 
-    // Password strength validation
     if (password.length < 8) {
-      setError("Password must be at least 8 characters long")
+      setError("Паролата трябва да бъде поне 8 символа")
       return false
     }
 
@@ -74,16 +74,13 @@ export default function RegisterPage() {
 
     try {
       await signUp(email, password, name)
-      // Redirect is handled in the auth provider
     } catch (error) {
-      // Error is handled in the auth provider
       setLoading(false)
     }
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0f172a] to-[#1e293b] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -left-40 w-80 h-80 rounded-full bg-teal-500/10 blur-3xl"></div>
         <div className="absolute top-1/2 right-0 w-96 h-96 rounded-full bg-teal-600/5 blur-3xl"></div>
@@ -98,8 +95,8 @@ export default function RegisterPage() {
                 <UserPlus className="h-6 w-6 text-white" />
               </div>
             </div>
-            <h2 className="text-3xl font-extrabold text-white tracking-tight">Join Our Community</h2>
-            <p className="mt-2 text-gray-400">Create an account to get started</p>
+            <h2 className="text-3xl font-extrabold text-white tracking-tight">Присъединете се към нашата общност</h2>
+            <p className="mt-2 text-gray-400">Създайте акаунт, за да започнете</p>
           </Link>
         </div>
 
@@ -120,14 +117,12 @@ export default function RegisterPage() {
           <form onSubmit={handleSubmit}>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name" className="text-gray-300">
-                 Пълно име
-                </Label>
+                <Label htmlFor="name" className="text-gray-300">Пълно име</Label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 h-4 w-4" />
                   <Input
                     id="name"
-                    placeholder="John Doe"
+                    placeholder="Иван Иванов"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
@@ -137,15 +132,13 @@ export default function RegisterPage() {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-gray-300">
-                 Имейл
-                </Label>
+                <Label htmlFor="email" className="text-gray-300">Имейл</Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 h-4 w-4" />
                   <Input
                     id="email"
                     type="email"
-                    placeholder="name@example.com"
+                    placeholder="ime@primer.bg"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -155,9 +148,7 @@ export default function RegisterPage() {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-gray-300">
-                 Парола
-                </Label>
+                <Label htmlFor="password" className="text-gray-300">Парола</Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 h-4 w-4" />
                   <Input
@@ -178,15 +169,13 @@ export default function RegisterPage() {
                     disabled={loading}
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                    <span className="sr-only">{showPassword ? "Hide password" : "Show password"}</span>
+                    <span className="sr-only">{showPassword ? "Скрий паролата" : "Покажи паролата"}</span>
                   </Button>
                 </div>
-                <p className="text-xs text-gray-500 mt-1">Password must be at least 8 characters long</p>
+                <p className="text-xs text-gray-500 mt-1">Паролата трябва да бъде поне 8 символа</p>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword" className="text-gray-300">
-                 Потвърдете паролата
-                </Label>
+                <Label htmlFor="confirmPassword" className="text-gray-300">Потвърдете паролата</Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 h-4 w-4" />
                   <Input
@@ -213,13 +202,13 @@ export default function RegisterPage() {
                     Създаване на акаунт...
                   </>
                 ) : (
-                  "Create Account"
+                  "Създай акаунт"
                 )}
               </Button>
               <div className="mt-6 text-center text-sm text-gray-400">
-                 Вече имате акаунтt?{" "}
+                Вече имате акаунт?{" "}
                 <Link href="/login" className="text-teal-400 hover:text-teal-300 font-medium">
-                 влезте
+                  Влезте
                 </Link>
               </div>
             </CardFooter>

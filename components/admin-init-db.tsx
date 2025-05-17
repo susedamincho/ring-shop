@@ -298,38 +298,39 @@ export default function AdminInitDb() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Database Initialization</h2>
+        <h2 className="text-2xl font-bold">Инициализация на база данни</h2>
         <Button onClick={checkDatabaseStatus} disabled={loading}>
           <RefreshCw className="mr-2 h-4 w-4" />
-          Check Status
+          Провери статуса
         </Button>
       </div>
 
+      
       <Alert>
-        <AlertTitle>Database Status</AlertTitle>
+        <AlertTitle>Статус на базата данни</AlertTitle>
         <AlertDescription>
           {statusChecked ? (
             <div className="space-y-2">
-              <p>Current database status:</p>
+              <p>Текущо състояние на базата данни:</p>
               <ul className="list-disc pl-4">
-                <li>Categories: {dbStatus.categories} items</li>
-                <li>Brands: {dbStatus.brands} items</li>
-                <li>Conditions: {dbStatus.conditions} items</li>
-                <li>Storage Options: {dbStatus.storageOptions} items</li>
-                <li>Carriers: {dbStatus.carriers} items</li>
-                <li>Colors: {dbStatus.colors} items</li>
+                <li>Категории: {dbStatus.categories} записа</li>
+                <li>Марки: {dbStatus.brands} записа</li>
+                <li>Състояния: {dbStatus.conditions} записа</li>
+                <li>Памет: {dbStatus.storageOptions} записа</li>
+                <li>Оператори: {dbStatus.carriers} записа</li>
+                <li>Цветове: {dbStatus.colors} записа</li>
               </ul>
             </div>
           ) : (
-            <p>Click "Check Status" to see current database status.</p>
+            <p>Натиснете "Провери статуса", за да видите текущото състояние.</p>
           )}
         </AlertDescription>
       </Alert>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList>
-          <TabsTrigger value="clothing">Clothing</TabsTrigger>
-          <TabsTrigger value="phones">Phones</TabsTrigger>
+          <TabsTrigger value="clothing">Дрехи</TabsTrigger>
+          <TabsTrigger value="phones">Телефони</TabsTrigger>
         </TabsList>
 
         <TabsContent value="clothing" className="space-y-4">
@@ -341,7 +342,7 @@ export default function AdminInitDb() {
                 onCheckedChange={() => handleCheckboxChange("categories")}
                 disabled={dbStatus.categories > 0}
               />
-              <Label htmlFor="categories">Categories ({dbStatus.categories} items)</Label>
+              <Label htmlFor="categories">Категории ({dbStatus.categories} записа)</Label>
             </div>
 
             <div className="flex items-center space-x-2">
@@ -351,10 +352,11 @@ export default function AdminInitDb() {
                 onCheckedChange={() => handleCheckboxChange("brands")}
                 disabled={dbStatus.brands > 0}
               />
-              <Label htmlFor="brands">Brands ({dbStatus.brands} items)</Label>
+              <Label htmlFor="brands">Марки ({dbStatus.brands} записа)</Label>
             </div>
           </div>
         </TabsContent>
+
 
         <TabsContent value="phones" className="space-y-4">
           <div className="space-y-4">
@@ -365,7 +367,7 @@ export default function AdminInitDb() {
                 onCheckedChange={() => handleCheckboxChange("categories")}
                 disabled={dbStatus.categories > 0}
               />
-              <Label htmlFor="categories">Phone Categories ({dbStatus.categories} items)</Label>
+              <Label htmlFor="categories">Категории за телефони ({dbStatus.categories} записа)</Label>
             </div>
 
             <div className="flex items-center space-x-2">
@@ -375,7 +377,7 @@ export default function AdminInitDb() {
                 onCheckedChange={() => handleCheckboxChange("brands")}
                 disabled={dbStatus.brands > 0}
               />
-              <Label htmlFor="brands">Phone Brands ({dbStatus.brands} items)</Label>
+              <Label htmlFor="brands">Марки за телефони ({dbStatus.brands} записа)</Label>
             </div>
 
             <div className="flex items-center space-x-2">
@@ -385,7 +387,7 @@ export default function AdminInitDb() {
                 onCheckedChange={() => handleCheckboxChange("conditions")}
                 disabled={dbStatus.conditions > 0}
               />
-              <Label htmlFor="conditions">Conditions ({dbStatus.conditions} items)</Label>
+              <Label htmlFor="conditions">Състояния ({dbStatus.conditions} записа)</Label>
             </div>
 
             <div className="flex items-center space-x-2">
@@ -395,7 +397,7 @@ export default function AdminInitDb() {
                 onCheckedChange={() => handleCheckboxChange("storageOptions")}
                 disabled={dbStatus.storageOptions > 0}
               />
-              <Label htmlFor="storageOptions">Storage Options ({dbStatus.storageOptions} items)</Label>
+              <Label htmlFor="storageOptions">Памет ({dbStatus.storageOptions} записа)</Label>
             </div>
 
             <div className="flex items-center space-x-2">
@@ -405,7 +407,7 @@ export default function AdminInitDb() {
                 onCheckedChange={() => handleCheckboxChange("carriers")}
                 disabled={dbStatus.carriers > 0}
               />
-              <Label htmlFor="carriers">Carriers ({dbStatus.carriers} items)</Label>
+              <Label htmlFor="carriers">Оператори ({dbStatus.carriers} записа)</Label>
             </div>
 
             <div className="flex items-center space-x-2">
@@ -415,15 +417,14 @@ export default function AdminInitDb() {
                 onCheckedChange={() => handleCheckboxChange("colors")}
                 disabled={dbStatus.colors > 0}
               />
-              <Label htmlFor="colors">Colors ({dbStatus.colors} items)</Label>
+              <Label htmlFor="colors">Цветове ({dbStatus.colors} записа)</Label>
             </div>
           </div>
         </TabsContent>
-      </Tabs>
-
-      <div className="flex justify-end">
+        </Tabs>
+        <div className="flex justify-end">
         <Button onClick={initializeDatabase} disabled={loading || !statusChecked}>
-          Initialize Selected Items
+          Инициализирай избраните елементи
         </Button>
       </div>
     </div>

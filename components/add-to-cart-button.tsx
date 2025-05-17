@@ -23,7 +23,7 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
   return (
     <Button className="w-full" size="lg" onClick={handleAddToCart}>
       <ShoppingCart className="mr-2 h-4 w-4" />
-      Add to Cart
+      Добави в количката
     </Button>
   )
 }

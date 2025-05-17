@@ -104,7 +104,7 @@ export default function ForgotPasswordPage() {
             <div className="mt-4 text-center text-sm">
             Запомнете паролата си?{" "}
               <Link href="/login" className="text-primary hover:underline">
-                Back to login
+                Назад към вход
               </Link>
             </div>
           </CardFooter>

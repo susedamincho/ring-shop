@@ -32,16 +32,16 @@ export default function AdminSidebar() {
   }
 
   const navItems = [
-    { path: "/admin", label: "Dashboard", icon: LayoutDashboard },
-    { path: "/admin/products", label: "Products", icon: Smartphone },
-    { path: "/admin/categories", label: "Categories", icon: Tag },
-    { path: "/admin/brands", label: "Brands", icon: Briefcase },
-    { path: "/admin/attributes", label: "Attributes", icon: Sliders },
-    { path: "/admin/orders", label: "Orders", icon: ShoppingCart },
-    { path: "/admin/customers", label: "Customers", icon: Users },
-    { path: "/admin/analytics", label: "Analytics", icon: BarChart3 },
-    { path: "/admin/database", label: "Database Settings", icon: Database },
-    { path: "/admin/settings", label: "Settings", icon: Settings },
+    { path: "/admin", label: "Табло", icon: LayoutDashboard },
+    { path: "/admin/products", label: "Продукти", icon: Smartphone },
+    { path: "/admin/categories", label: "Категории", icon: Tag },
+    { path: "/admin/brands", label: "Марки", icon: Briefcase },
+    { path: "/admin/attributes", label: "Атрибути", icon: Sliders },
+    { path: "/admin/orders", label: "Поръчки", icon: ShoppingCart },
+    { path: "/admin/customers", label: "Клиенти", icon: Users },
+    { path: "/admin/analytics", label: "Анализи", icon: BarChart3 },
+    { path: "/admin/database", label: "База данни", icon: Database },
+    { path: "/admin/settings", label: "Настройки", icon: Settings },
   ]
 
   return (
@@ -50,7 +50,7 @@ export default function AdminSidebar() {
         <div className="flex h-16 items-center border-b px-6">
           <Link href="/admin" className="flex items-center gap-2 font-semibold">
             <Package className="h-6 w-6" />
-            <span className="">Admin Dashboard</span>
+            <span className="">Админ панел</span>
           </Link>
         </div>
         <div className="flex-1 overflow-auto py-2">
@@ -59,8 +59,9 @@ export default function AdminSidebar() {
               <Link
                 key={item.path}
                 href={item.path}
-                className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${isActive(item.path) ? "bg-muted text-primary" : "text-muted-foreground"
-                  }`}
+                className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${
+                  isActive(item.path) ? "bg-muted text-primary" : "text-muted-foreground"
+                }`}
               >
                 <item.icon className="h-4 w-4" />
                 {item.label}
@@ -73,12 +74,12 @@ export default function AdminSidebar() {
             <Link href="/">
               <Button variant="outline" className="w-full justify-start">
                 <Home className="mr-2 h-4 w-4" />
-                Back to Store
+                Назад към магазина
               </Button>
             </Link>
             <Button variant="outline" className="w-full justify-start" onClick={signOut}>
               <LogOut className="mr-2 h-4 w-4" />
-              Sign Out
+              Изход
             </Button>
           </div>
         </div>

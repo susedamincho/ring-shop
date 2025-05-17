@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { createContext, useContext, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import {
@@ -51,17 +50,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false)
   const [loading, setLoading] = useState(true)
 
-  // Listen for auth state changes
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
-        // User is signed in
         try {
-          // Get additional user data from Firestore
           const userDoc = await getDoc(doc(db, "users", firebaseUser.uid))
 
           if (userDoc.exists()) {
-            // User exists in Firestore
             const userData = userDoc.data()
             setUser({
               uid: firebaseUser.uid,
@@ -72,8 +67,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             })
             setIsAdmin(userData.isAdmin || false)
           } else {
-            // User exists in Auth but not in Firestore
-            // Create a basic profile
             setUser({
               uid: firebaseUser.uid,
               email: firebaseUser.email,
@@ -84,8 +77,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setIsAdmin(false)
           }
         } catch (error) {
-          console.error("Error fetching user data:", error)
-          // Basic user info from Firebase Auth
+          console.error("Грешка при вземане на потребителски данни:", error)
           setUser({
             uid: firebaseUser.uid,
             email: firebaseUser.email,
@@ -96,51 +88,44 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setIsAdmin(false)
         }
       } else {
-        // User is signed out
         setUser(null)
         setIsAdmin(false)
       }
       setLoading(false)
     })
 
-    // Cleanup subscription
     return () => unsubscribe()
   }, [])
 
-  // Sign in with email and password
   const signIn = async (email: string, password: string) => {
     try {
       setLoading(true)
       const userCredential = await signInWithEmailAndPassword(auth, email, password)
       const firebaseUser = userCredential.user
-
-      // Get user data from Firestore
       const userDoc = await getDoc(doc(db, "users", firebaseUser.uid))
 
       if (userDoc.exists()) {
-        // Update last login timestamp
         await setDoc(doc(db, "users", firebaseUser.uid), { lastLogin: serverTimestamp() }, { merge: true })
       }
 
       toast({
-        title: "Welcome back!",
-        description: "You have successfully signed in.",
+        title: "Добре дошли обратно!",
+        description: "Успешно влязохте в системата.",
       })
 
-      // Redirect to home page or previous page
       router.push("/")
     } catch (error: any) {
-      console.error("Error signing in:", error)
-      let errorMessage = "Failed to sign in. Please check your credentials."
+      console.error("Грешка при вход:", error)
+      let errorMessage = "Входът не бе успешен. Проверете имейла и паролата си."
 
       if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password") {
-        errorMessage = "Invalid email or password. Please try again."
+        errorMessage = "Невалиден имейл или парола. Опитайте отново."
       } else if (error.code === "auth/too-many-requests") {
-        errorMessage = "Too many failed login attempts. Please try again later or reset your password."
+        errorMessage = "Твърде много неуспешни опити. Опитайте по-късно или използвайте 'Забравена парола'."
       }
 
       toast({
-        title: "Sign in failed",
+        title: "Грешка при вход",
         description: errorMessage,
         variant: "destructive",
       })
@@ -150,18 +135,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  // Sign up with email and password
   const signUp = async (email: string, password: string, name: string) => {
     try {
       setLoading(true)
-      // Create user in Firebase Auth
       const userCredential = await createUserWithEmailAndPassword(auth, email, password)
       const firebaseUser = userCredential.user
 
-      // Update profile with name
       await updateProfile(firebaseUser, { displayName: name })
 
-      // Create user document in Firestore
       await setDoc(doc(db, "users", firebaseUser.uid), {
         uid: firebaseUser.uid,
         email: firebaseUser.email,
@@ -172,26 +153,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       })
 
       toast({
-        title: "Account created!",
-        description: "Your account has been successfully created.",
+        title: "Акаунтът е създаден!",
+        description: "Регистрацията беше успешна.",
       })
 
-      // Redirect to home page
       router.push("/")
     } catch (error: any) {
-      console.error("Error signing up:", error)
-      let errorMessage = "Failed to create account. Please try again."
+      console.error("Грешка при регистрация:", error)
+      let errorMessage = "Неуспешна регистрация. Опитайте отново."
 
       if (error.code === "auth/email-already-in-use") {
-        errorMessage = "Email is already in use. Please use a different email or sign in."
+        errorMessage = "Имейлът вече се използва. Влезте или използвайте друг."
       } else if (error.code === "auth/weak-password") {
-        errorMessage = "Password is too weak. Please use a stronger password."
+        errorMessage = "Паролата е твърде слаба. Моля, използвайте по-силна."
       } else if (error.code === "auth/invalid-email") {
-        errorMessage = "Invalid email address. Please check your email."
+        errorMessage = "Невалиден имейл адрес. Проверете въведения имейл."
       }
 
       toast({
-        title: "Sign up failed",
+        title: "Грешка при регистрация",
         description: errorMessage,
         variant: "destructive",
       })
@@ -201,46 +181,44 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  // Sign out
   const signOut = async () => {
     try {
       await firebaseSignOut(auth)
       toast({
-        title: "Signed out",
-        description: "You have been successfully signed out.",
+        title: "Излязохте от акаунта",
+        description: "Успешно излязохте от системата.",
       })
       router.push("/login")
     } catch (error) {
-      console.error("Error signing out:", error)
+      console.error("Грешка при изход:", error)
       toast({
-        title: "Sign out failed",
-        description: "Failed to sign out. Please try again.",
+        title: "Грешка при изход",
+        description: "Неуспешен опит за излизане. Опитайте отново.",
         variant: "destructive",
       })
       throw error
     }
   }
 
-  // Reset password
   const resetPassword = async (email: string) => {
     try {
       await sendPasswordResetEmail(auth, email)
       toast({
-        title: "Password reset email sent",
-        description: "Check your email for a link to reset your password.",
+        title: "Имейл за нулиране на парола е изпратен",
+        description: "Проверете пощата си за връзка за нулиране.",
       })
     } catch (error: any) {
-      console.error("Error resetting password:", error)
-      let errorMessage = "Failed to send password reset email. Please try again."
+      console.error("Грешка при нулиране на парола:", error)
+      let errorMessage = "Неуспешно изпращане на имейл за нулиране."
 
       if (error.code === "auth/user-not-found") {
-        errorMessage = "No account found with this email address."
+        errorMessage = "Няма акаунт с този имейл адрес."
       } else if (error.code === "auth/invalid-email") {
-        errorMessage = "Invalid email address. Please check your email."
+        errorMessage = "Невалиден имейл адрес. Проверете отново."
       }
 
       toast({
-        title: "Password reset failed",
+        title: "Грешка при нулиране",
         description: errorMessage,
         variant: "destructive",
       })

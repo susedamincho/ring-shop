@@ -116,7 +116,7 @@ export default async function Home() {
               {heroProduct && (
                 <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 px-5 py-2 rounded-full backdrop-blur-lg bg-white/20 text-white/90 shadow-lg">
                   <span className="text-lg font-semibold">
-                    ${heroProduct.price}
+                    {heroProduct.price}лв.
                   </span>
                   {heroProduct.discount > 0 && (
                     <span className="text-xs px-2 py-0.5 rounded-full bg-[#f97316]">
@@ -132,7 +132,7 @@ export default async function Home() {
           <div className="order-1 lg:order-2 lg:col-span-6 text-center lg:text-left space-y-6">
             {heroProduct?.discount > 0 && (
               <Badge className="mx-auto lg:mx-0 bg-[#0d9488]/90 text-white">
-                Save {heroProduct.discount}% Today
+                Спести {heroProduct.discount}% Днеска
               </Badge>
             )}
 
@@ -278,7 +278,7 @@ export default async function Home() {
                             {product.name?.charAt(0) || "P"}
                           </div>
                         )}
-                        <Badge className="absolute top-4 right-4 bg-[#0d9488]">New</Badge>
+                        <Badge className="absolute top-4 right-4 bg-[#0d9488]">Ново</Badge>
                       </div>
                       <div className="space-y-1 flex-1 flex flex-col">
                         <h3 className="font-medium text-lg group-hover:text-[#0d9488] transition-colors text-white">
@@ -288,7 +288,7 @@ export default async function Home() {
                           {product.description?.substring(0, 60)}...
                         </p>
                         <div className="flex items-center justify-between">
-                          <p className="font-semibold text-white">${product.price?.toFixed(2)}</p>
+                          <p className="font-semibold text-white">{product.price?.toFixed(2)}лв.</p>
                           <div className="flex">
                             {[1, 2, 3, 4, 5].map((star) => (
                               <Star

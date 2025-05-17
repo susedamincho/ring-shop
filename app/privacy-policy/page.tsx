@@ -1,8 +1,10 @@
+// файл: PrivacyPolicyPage.tsx
+
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | RingShop",
-  description: "RingShop's privacy policy explains how we collect, use, and protect your personal information.",
+  title: "Политика за поверителност | RingShop",
+  description: "Политиката за поверителност на RingShop обяснява как събираме, използваме и защитаваме вашата лична информация.",
 }
 
 export default function PrivacyPolicyPage() {
@@ -10,113 +12,105 @@ export default function PrivacyPolicyPage() {
     <div className="container max-w-4xl py-12 px-4 md:px-6">
       <div className="space-y-8">
         <div className="text-center space-y-4">
-          <h1 className="text-4xl font-bold tracking-tight">Privacy Policy</h1>
-          <p className="text-muted-foreground">Last updated: April 16, 2025</p>
+          <h1 className="text-4xl font-bold tracking-tight">Политика за поверителност</h1>
+          <p className="text-muted-foreground">Последна актуализация: 16 април 2025 г.</p>
         </div>
 
         <div className="bg-muted p-6 rounded-lg">
           <p className="text-sm">
-            Тази Политика за поверителност описва как RingShop събира, използва и споделя вашите лични
-            информация, когато посещавате нашия уебсайт, правите покупка или взаимодействате с нас по някакъв начин. Ние уважаваме вашите
-            поверителността и се ангажираме да защитаваме вашата лична информация.
+            Тази Политика за поверителност описва как RingShop събира, използва и споделя вашата лична
+            информация, когато посещавате нашия уебсайт, правите покупка или взаимодействате с нас по друг начин. Ние уважаваме вашата
+            поверителност и се ангажираме да защитаваме вашите данни.
           </p>
         </div>
 
         <div className="prose prose-slate dark:prose-invert max-w-none">
-          <h2>Информация, която събираме</h2>
-          <p>Ние събираме няколко вида информация от и за потребителите на нашия уебсайт, включително:</p>
+          <h2>Каква информация събираме</h2>
+          <p>Събираме няколко вида информация от и за потребителите на нашия уебсайт, включително:</p>
           <ul>
             <li>
-              <strong>Лична информация:</strong> Име, имейл адрес, пощенски адрес, телефонен номер, плащане
-              информация и всяка друга информация, която ни предоставяте.
+              <strong>Лична информация:</strong> Име, имейл, адрес, телефон, информация за плащане и всякакви други данни, които ни предоставяте.
             </li>
             <li>
-              <strong>Информация за употреба:</strong> Информация за това как използвате нашия уебсайт, продукти и услуги.
+              <strong>Информация за използване:</strong> Как използвате уебсайта, продуктите и услугите ни.
             </li>
             <li>
-              <strong>Информация за устройството:</strong> Информация за устройството, което използвате за достъп до нашия уебсайт, включително
-              IP адрес, тип браузър и операционна система.
+              <strong>Информация за устройството:</strong> IP адрес, тип браузър, операционна система и други технически детайли.
             </li>
             <li>
-              <strong>Бисквитки и подобни технологии:</strong> Използваме бисквитки и подобни технологии за събиране
-              информация за вашите дейности при сърфиране.
+              <strong>Бисквитки и технологии:</strong> Използваме бисквитки за събиране на данни относно вашата активност на сайта.
             </li>
           </ul>
 
           <h2>Как използваме вашата информация</h2>
-          <p>Ние използваме информацията, която събираме, за да:</p>
+          <p>Използваме събраната информация, за да:</p>
           <ul>
-            <li>Process and fulfill your orders</li>
-            <li>Communicate with you about your orders, products, and services</li>
-            <li>Provide customer support</li>
-            <li>Improve our website, products, and services</li>
-            <li>Personalize your shopping experience</li>
-            <li>Send you marketing communications (if you've opted in)</li>
-            <li>Detect and prevent fraud</li>
-            <li>Comply with legal obligations</li>
+            <li>Обработим и изпълним вашите поръчки</li>
+            <li>Комуникираме с вас относно поръчки, продукти и услуги</li>
+            <li>Предоставим обслужване на клиенти</li>
+            <li>Подобрим нашия сайт, продукти и услуги</li>
+            <li>Персонализираме вашето пазаруване</li>
+            <li>Изпращаме маркетингови съобщения (ако сте дали съгласие)</li>
+            <li>Открием и предотвратим измами</li>
+            <li>Спазваме законови изисквания</li>
           </ul>
 
-          <h2>How We Share Your Information</h2>
-          <p>We may share your information with:</p>
+          <h2>Как споделяме вашата информация</h2>
+          <p>Може да споделим вашата информация със:</p>
           <ul>
             <li>
-              <strong>Service Providers:</strong> Companies that perform services on our behalf, such as payment
-              processing, shipping, and marketing.
+              <strong>Доставчици на услуги:</strong> Фирми, които извършват дейности от наше име – плащания, доставка, маркетинг.
             </li>
             <li>
-              <strong>Business Partners:</strong> Trusted third parties who help us operate our business.
+              <strong>Бизнес партньори:</strong> Надеждни трети страни, които подпомагат нашия бизнес.
             </li>
             <li>
-              <strong>Legal Authorities:</strong> When required by law or to protect our rights.
+              <strong>Законодателни органи:</strong> Когато се изисква по закон или за защита на нашите права.
             </li>
           </ul>
-          <p>We do not sell your personal information to third parties.</p>
+          <p>Ние не продаваме вашата лична информация на трети страни.</p>
 
-          <h2>Your Rights</h2>
-          <p>Depending on your location, you may have certain rights regarding your personal information, including:</p>
+          <h2>Вашите права</h2>
+          <p>В зависимост от местоположението ви, може да имате следните права:</p>
           <ul>
-            <li>The right to access your personal information</li>
-            <li>The right to correct inaccurate information</li>
-            <li>The right to delete your personal information</li>
-            <li>The right to restrict or object to processing</li>
-            <li>The right to data portability</li>
-            <li>The right to withdraw consent</li>
+            <li>Право на достъп до вашите лични данни</li>
+            <li>Право на корекция на неточни данни</li>
+            <li>Право на изтриване на вашата информация</li>
+            <li>Право да възразите срещу обработка</li>
+            <li>Право на преносимост на данните</li>
+            <li>Право на оттегляне на съгласие</li>
           </ul>
-          <p>To exercise these rights, please contact us using the information provided below.</p>
+          <p>За да упражните тези права, моля свържете се с нас чрез информацията по-долу.</p>
 
-          <h2>Data Security</h2>
+          <h2>Сигурност на данните</h2>
           <p>
-            We implement appropriate security measures to protect your personal information from unauthorized access,
-            alteration, disclosure, or destruction. However, no method of transmission over the Internet or electronic
-            storage is 100% secure, so we cannot guarantee absolute security.
+            Прилагаме подходящи мерки за сигурност, за да предпазим личните ви данни от неоторизиран достъп, промяна или унищожаване.
+            Въпреки това, нито една електронна система не е напълно защитена и не можем да гарантираме абсолютна сигурност.
           </p>
 
-          <h2>Data Retention</h2>
+          <h2>Съхранение на данни</h2>
           <p>
-            We retain your personal information for as long as necessary to fulfill the purposes outlined in this
-            Privacy Policy, unless a longer retention period is required or permitted by law.
+            Съхраняваме вашата информация толкова дълго, колкото е необходимо за целите, описани в тази политика, освен ако не се изисква по-дълъг период по закон.
           </p>
 
-          <h2>Children's Privacy</h2>
+          <h2>Поверителност на деца</h2>
           <p>
-            Our website is not intended for children under 13 years of age. We do not knowingly collect personal
-            information from children under 13.
+            Нашият сайт не е предназначен за деца под 13 години. Ние не събираме съзнателно лични данни от деца под тази възраст.
           </p>
 
-          <h2>Changes to This Privacy Policy</h2>
+          <h2>Промени в политиката</h2>
           <p>
-            We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new
-            Privacy Policy on this page and updating the "Last Updated" date.
+            Можем да актуализираме тази Политика за поверителност. Ще публикуваме новата версия на тази страница и ще променим датата по-горе.
           </p>
 
-          <h2>Contact Us</h2>
-          <p>If you have any questions about this Privacy Policy, please contact us at:</p>
+          <h2>Свържете се с нас</h2>
+          <p>Ако имате въпроси относно тази политика:</p>
           <p>
-            Email: privacy@RingShop.com
+            Имейл: privacy@RingShop.com
             <br />
-            Address: Ул. Тракия 43, Пловдив 4000
+            Адрес: ул. Тракия 43, Пловдив 4000
             <br />
-            Phone: +359 878 027087
+            Телефон: +359 878 027087
           </p>
         </div>
       </div>
