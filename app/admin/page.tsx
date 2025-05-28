@@ -6,7 +6,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import AdminProducts from "@/components/admin-products"
 import AdminOrders from "@/components/admin-orders"
 import AdminCustomers from "@/components/admin-customers"
-import AdminAnalytics from "@/components/admin-analytics"
 import AdminCategories from "@/components/admin-categories"
 import ProtectedRoute from "@/components/protected-route"
 import { getDashboardStats } from "@/lib/firebase/analytics"
@@ -66,7 +65,7 @@ export default function AdminPage() {
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">${stats.revenue.total.toFixed(2)}</div>
+                <div className="text-2xl font-bold">{stats.revenue.total.toFixed(2)} лв.</div>
                 <p className="text-xs text-muted-foreground">
                   {stats.revenue.change >= 0 ? "+" : ""}
                   {stats.revenue.change}% from last month
@@ -118,7 +117,6 @@ export default function AdminPage() {
             <TabsTrigger value="categories">Категории</TabsTrigger>
             <TabsTrigger value="orders">Поръчки</TabsTrigger>
             <TabsTrigger value="customers">Клиенти</TabsTrigger>
-            <TabsTrigger value="analytics">Анализ</TabsTrigger>
           </TabsList>
           <TabsContent value="products" className="pt-6">
             <AdminProducts />
@@ -131,9 +129,6 @@ export default function AdminPage() {
           </TabsContent>
           <TabsContent value="customers" className="pt-6">
             <AdminCustomers />
-          </TabsContent>
-          <TabsContent value="analytics" className="pt-6">
-            <AdminAnalytics />
           </TabsContent>
         </Tabs>
       </div>

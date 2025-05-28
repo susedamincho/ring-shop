@@ -98,42 +98,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const signIn = async (email: string, password: string) => {
-    try {
-      setLoading(true)
-      const userCredential = await signInWithEmailAndPassword(auth, email, password)
-      const firebaseUser = userCredential.user
-      const userDoc = await getDoc(doc(db, "users", firebaseUser.uid))
+  try {
+    setLoading(true)
+    const userCredential = await signInWithEmailAndPassword(auth, email, password)
+    const firebaseUser = userCredential.user
+    const userDoc = await getDoc(doc(db, "users", firebaseUser.uid))
 
-      if (userDoc.exists()) {
-        await setDoc(doc(db, "users", firebaseUser.uid), { lastLogin: serverTimestamp() }, { merge: true })
-      }
-
-      toast({
-        title: "Добре дошли обратно!",
-        description: "Успешно влязохте в системата.",
-      })
-
-      router.push("/")
-    } catch (error: any) {
-      console.error("Грешка при вход:", error)
-      let errorMessage = "Входът не бе успешен. Проверете имейла и паролата си."
-
-      if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password") {
-        errorMessage = "Невалиден имейл или парола. Опитайте отново."
-      } else if (error.code === "auth/too-many-requests") {
-        errorMessage = "Твърде много неуспешни опити. Опитайте по-късно или използвайте 'Забравена парола'."
-      }
-
-      toast({
-        title: "Грешка при вход",
-        description: errorMessage,
-        variant: "destructive",
-      })
-      throw error
-    } finally {
-      setLoading(false)
+    if (userDoc.exists()) {
+      await setDoc(doc(db, "users", firebaseUser.uid), { lastLogin: serverTimestamp() }, { merge: true })
     }
+
+    toast({
+      title: "Добре дошли обратно!",
+      description: "Успешно влязохте в системата.",
+    })
+
+    router.push("/")
+  } catch (error: any) {
+    console.error("Грешка при вход:", error)
+    let errorMessage = "Входът не бе успешен. Проверете имейла и паролата си."
+
+    if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password") {
+      errorMessage = "Невалиден имейл или парола. Опитайте отново."
+    } else if (error.code === "auth/too-many-requests") {
+      errorMessage = "Твърде много неуспешни опити. Опитайте по-късно или използвайте 'Забравена парола'."
+    } else if (error.code === "auth/invalid-credential") {
+      errorMessage = "Невалидни данни за вход. Проверете отново."
+    }
+
+    // Тук — хвърляме грешка с текст за `LoginPage.tsx`
+    throw new Error(errorMessage)
+  } finally {
+    setLoading(false)
   }
+}
 
   const signUp = async (email: string, password: string, name: string) => {
     try {

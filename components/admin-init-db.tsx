@@ -10,65 +10,7 @@ import { collection, addDoc, getDocs, serverTimestamp } from "firebase/firestore
 import { db } from "@/lib/firebase/config"
 import { initializeAttributeItems } from "@/lib/firebase/attributes"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { CheckCircle2, RefreshCw } from "lucide-react"
-
-// Initial categories to seed the database
-const initialCategories = [
-  {
-    name: "Tops",
-    slug: "tops",
-    description: "T-shirts, hoodies, sweaters, and more",
-  },
-  {
-    name: "Bottoms",
-    slug: "bottoms",
-    description: "Pants, shorts, skirts, and more",
-  },
-  {
-    name: "Footwear",
-    slug: "footwear",
-    description: "Sneakers, boots, sandals, and more",
-  },
-  {
-    name: "Accessories",
-    slug: "accessories",
-    description: "Hats, bags, jewelry, and more",
-  },
-  {
-    name: "Outerwear",
-    slug: "outerwear",
-    description: "Jackets, coats, and more",
-  },
-]
-
-// Initial brands to seed the database
-const initialBrands = [
-  {
-    name: "StreetCore",
-    slug: "streetcore",
-    description: "Urban essentials with a modern twist",
-  },
-  {
-    name: "UrbanEdge",
-    slug: "urbanedge",
-    description: "Cutting-edge streetwear for the fashion-forward",
-  },
-  {
-    name: "TechWear",
-    slug: "techwear",
-    description: "Functional clothing with technical fabrics",
-  },
-  {
-    name: "MetroStyle",
-    slug: "metrostyle",
-    description: "Sophisticated urban fashion",
-  },
-  {
-    name: "CityBlend",
-    slug: "cityblend",
-    description: "Versatile pieces for city living",
-  },
-]
+import { RefreshCw } from "lucide-react"
 
 // Initial phone brands
 const initialPhoneBrands = [
@@ -131,7 +73,6 @@ const initialColors = [
 export default function AdminInitDb() {
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
-  const [activeTab, setActiveTab] = useState("clothing")
   const [dbStatus, setDbStatus] = useState({
     categories: 0,
     brands: 0,
@@ -142,7 +83,6 @@ export default function AdminInitDb() {
   })
   const [statusChecked, setStatusChecked] = useState(false)
 
-  // Selected items to initialize
   const [selectedItems, setSelectedItems] = useState({
     categories: true,
     brands: true,
@@ -157,26 +97,12 @@ export default function AdminInitDb() {
       setLoading(true)
       setStatusChecked(false)
 
-      // Check if categories already exist
-      const categoriesCollection = collection(db, "categories")
-      const categoriesSnapshot = await getDocs(categoriesCollection)
-
-      // Check if brands already exist
-      const brandsCollection = collection(db, "brands")
-      const brandsSnapshot = await getDocs(brandsCollection)
-
-      // Check if attributes already exist
-      const conditionsCollection = collection(db, "conditions")
-      const conditionsSnapshot = await getDocs(conditionsCollection)
-
-      const storageOptionsCollection = collection(db, "storageOptions")
-      const storageOptionsSnapshot = await getDocs(storageOptionsCollection)
-
-      const carriersCollection = collection(db, "carriers")
-      const carriersSnapshot = await getDocs(carriersCollection)
-
-      const colorsCollection = collection(db, "colors")
-      const colorsSnapshot = await getDocs(colorsCollection)
+      const categoriesSnapshot = await getDocs(collection(db, "categories"))
+      const brandsSnapshot = await getDocs(collection(db, "brands"))
+      const conditionsSnapshot = await getDocs(collection(db, "conditions"))
+      const storageOptionsSnapshot = await getDocs(collection(db, "storageOptions"))
+      const carriersSnapshot = await getDocs(collection(db, "carriers"))
+      const colorsSnapshot = await getDocs(collection(db, "colors"))
 
       setDbStatus({
         categories: categoriesSnapshot.size,
@@ -189,14 +115,14 @@ export default function AdminInitDb() {
 
       setStatusChecked(true)
       toast({
-        title: "Status Check Complete",
-        description: "Database status has been updated.",
+        title: "Статус проверен",
+        description: "Базата данни е проверена успешно.",
       })
     } catch (error) {
       console.error("Error checking database status:", error)
       toast({
-        title: "Error",
-        description: "Failed to check database status. Please try again.",
+        title: "Грешка",
+        description: "Неуспешна проверка на базата данни.",
         variant: "destructive",
       })
     } finally {
@@ -205,89 +131,62 @@ export default function AdminInitDb() {
   }
 
   const handleCheckboxChange = (item: keyof typeof selectedItems) => {
-    setSelectedItems({
-      ...selectedItems,
-      [item]: !selectedItems[item],
-    })
+    setSelectedItems({ ...selectedItems, [item]: !selectedItems[item] })
   }
 
   const initializeDatabase = async () => {
     try {
       setLoading(true)
-
       let itemsAdded = 0
 
-      // Add categories if selected and needed
       if (selectedItems.categories && dbStatus.categories === 0) {
-        const categoriesCollection = collection(db, "categories")
-        const categoriesToAdd = activeTab === "clothing" ? initialCategories : initialPhoneCategories
-
-        for (const category of categoriesToAdd) {
-          await addDoc(categoriesCollection, {
-            ...category,
-            createdAt: serverTimestamp(),
-          })
+        for (const category of initialPhoneCategories) {
+          await addDoc(collection(db, "categories"), { ...category, createdAt: serverTimestamp() })
           itemsAdded++
         }
       }
 
-      // Add brands if selected and needed
       if (selectedItems.brands && dbStatus.brands === 0) {
-        const brandsCollection = collection(db, "brands")
-        const brandsToAdd = activeTab === "clothing" ? initialBrands : initialPhoneBrands
-
-        for (const brand of brandsToAdd) {
-          await addDoc(brandsCollection, {
-            ...brand,
-            createdAt: serverTimestamp(),
-          })
+        for (const brand of initialPhoneBrands) {
+          await addDoc(collection(db, "brands"), { ...brand, createdAt: serverTimestamp() })
           itemsAdded++
         }
       }
 
-      // Add conditions if selected and needed
       if (selectedItems.conditions && dbStatus.conditions === 0) {
         await initializeAttributeItems("conditions", initialConditions)
         itemsAdded += initialConditions.length
       }
 
-      // Add storage options if selected and needed
       if (selectedItems.storageOptions && dbStatus.storageOptions === 0) {
         await initializeAttributeItems("storageOptions", initialStorageOptions)
         itemsAdded += initialStorageOptions.length
       }
 
-      // Add carriers if selected and needed
       if (selectedItems.carriers && dbStatus.carriers === 0) {
         await initializeAttributeItems("carriers", initialCarriers)
         itemsAdded += initialCarriers.length
       }
 
-      // Add colors if selected and needed
       if (selectedItems.colors && dbStatus.colors === 0) {
         await initializeAttributeItems("colors", initialColors)
         itemsAdded += initialColors.length
       }
 
-      if (itemsAdded > 0) {
-        toast({
-          title: "Success",
-          description: `Successfully added ${itemsAdded} items to the database.`,
-        })
-      } else {
-        toast({
-          title: "No Changes Made",
-          description: "No new items were added to the database.",
-        })
-      }
+      toast({
+        title: itemsAdded > 0 ? "Успех" : "Без промени",
+        description:
+          itemsAdded > 0
+            ? `Добавени ${itemsAdded} нови елемента в базата данни.`
+            : "Няма нужда от добавяне – всичко вече съществува.",
+      })
 
-      // Refresh status after initialization
       await checkDatabaseStatus()
     } catch (error) {
       console.error("Error initializing database:", error)
       toast({
-        title: "Error",
-        description: "Failed to initialize database. Please try again.",
+        title: "Грешка",
+        description: "Неуспешна инициализация на базата данни.",
         variant: "destructive",
       })
     } finally {
@@ -305,7 +204,6 @@ export default function AdminInitDb() {
         </Button>
       </div>
 
-      
       <Alert>
         <AlertTitle>Статус на базата данни</AlertTitle>
         <AlertDescription>
@@ -327,102 +225,69 @@ export default function AdminInitDb() {
         </AlertDescription>
       </Alert>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList>
-          <TabsTrigger value="clothing">Дрехи</TabsTrigger>
-          <TabsTrigger value="phones">Телефони</TabsTrigger>
-        </TabsList>
+      <div className="space-y-4">
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            id="categories"
+            checked={selectedItems.categories}
+            onCheckedChange={() => handleCheckboxChange("categories")}
+            disabled={dbStatus.categories > 0}
+          />
+          <Label htmlFor="categories">Категории за телефони ({dbStatus.categories} записа)</Label>
+        </div>
 
-        <TabsContent value="clothing" className="space-y-4">
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="categories"
-                checked={selectedItems.categories}
-                onCheckedChange={() => handleCheckboxChange("categories")}
-                disabled={dbStatus.categories > 0}
-              />
-              <Label htmlFor="categories">Категории ({dbStatus.categories} записа)</Label>
-            </div>
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            id="brands"
+            checked={selectedItems.brands}
+            onCheckedChange={() => handleCheckboxChange("brands")}
+            disabled={dbStatus.brands > 0}
+          />
+          <Label htmlFor="brands">Марки за телефони ({dbStatus.brands} записа)</Label>
+        </div>
 
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="brands"
-                checked={selectedItems.brands}
-                onCheckedChange={() => handleCheckboxChange("brands")}
-                disabled={dbStatus.brands > 0}
-              />
-              <Label htmlFor="brands">Марки ({dbStatus.brands} записа)</Label>
-            </div>
-          </div>
-        </TabsContent>
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            id="conditions"
+            checked={selectedItems.conditions}
+            onCheckedChange={() => handleCheckboxChange("conditions")}
+            disabled={dbStatus.conditions > 0}
+          />
+          <Label htmlFor="conditions">Състояния ({dbStatus.conditions} записа)</Label>
+        </div>
 
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            id="storageOptions"
+            checked={selectedItems.storageOptions}
+            onCheckedChange={() => handleCheckboxChange("storageOptions")}
+            disabled={dbStatus.storageOptions > 0}
+          />
+          <Label htmlFor="storageOptions">Памет ({dbStatus.storageOptions} записа)</Label>
+        </div>
 
-        <TabsContent value="phones" className="space-y-4">
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="categories"
-                checked={selectedItems.categories}
-                onCheckedChange={() => handleCheckboxChange("categories")}
-                disabled={dbStatus.categories > 0}
-              />
-              <Label htmlFor="categories">Категории за телефони ({dbStatus.categories} записа)</Label>
-            </div>
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            id="carriers"
+            checked={selectedItems.carriers}
+            onCheckedChange={() => handleCheckboxChange("carriers")}
+            disabled={dbStatus.carriers > 0}
+          />
+          <Label htmlFor="carriers">Оператори ({dbStatus.carriers} записа)</Label>
+        </div>
 
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="brands"
-                checked={selectedItems.brands}
-                onCheckedChange={() => handleCheckboxChange("brands")}
-                disabled={dbStatus.brands > 0}
-              />
-              <Label htmlFor="brands">Марки за телефони ({dbStatus.brands} записа)</Label>
-            </div>
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            id="colors"
+            checked={selectedItems.colors}
+            onCheckedChange={() => handleCheckboxChange("colors")}
+            disabled={dbStatus.colors > 0}
+          />
+          <Label htmlFor="colors">Цветове ({dbStatus.colors} записа)</Label>
+        </div>
+      </div>
 
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="conditions"
-                checked={selectedItems.conditions}
-                onCheckedChange={() => handleCheckboxChange("conditions")}
-                disabled={dbStatus.conditions > 0}
-              />
-              <Label htmlFor="conditions">Състояния ({dbStatus.conditions} записа)</Label>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="storageOptions"
-                checked={selectedItems.storageOptions}
-                onCheckedChange={() => handleCheckboxChange("storageOptions")}
-                disabled={dbStatus.storageOptions > 0}
-              />
-              <Label htmlFor="storageOptions">Памет ({dbStatus.storageOptions} записа)</Label>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="carriers"
-                checked={selectedItems.carriers}
-                onCheckedChange={() => handleCheckboxChange("carriers")}
-                disabled={dbStatus.carriers > 0}
-              />
-              <Label htmlFor="carriers">Оператори ({dbStatus.carriers} записа)</Label>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="colors"
-                checked={selectedItems.colors}
-                onCheckedChange={() => handleCheckboxChange("colors")}
-                disabled={dbStatus.colors > 0}
-              />
-              <Label htmlFor="colors">Цветове ({dbStatus.colors} записа)</Label>
-            </div>
-          </div>
-        </TabsContent>
-        </Tabs>
-        <div className="flex justify-end">
+      <div className="flex justify-end">
         <Button onClick={initializeDatabase} disabled={loading || !statusChecked}>
           Инициализирай избраните елементи
         </Button>

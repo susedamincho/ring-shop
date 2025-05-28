@@ -39,7 +39,6 @@ export default function AdminSidebar() {
     { path: "/admin/attributes", label: "Атрибути", icon: Sliders },
     { path: "/admin/orders", label: "Поръчки", icon: ShoppingCart },
     { path: "/admin/customers", label: "Клиенти", icon: Users },
-    { path: "/admin/analytics", label: "Анализи", icon: BarChart3 },
     { path: "/admin/database", label: "База данни", icon: Database },
     { path: "/admin/settings", label: "Настройки", icon: Settings },
   ]

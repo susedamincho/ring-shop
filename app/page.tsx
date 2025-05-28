@@ -61,7 +61,6 @@ export default async function Home() {
 
     ],
   )
-
   // Process featured product for hero section
   const heroProduct =
     featuredProducts.length > 0

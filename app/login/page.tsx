@@ -50,16 +50,20 @@ export default function LoginPage() {
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError("")
-    if (!validateForm()) return
-    setLoading(true)
-    try {
-      await signIn(email, password)
-    } catch (error) {
-      setLoading(false)
-    }
+  e.preventDefault()
+  setError("") // нулираме грешката преди опит за вход
+  if (!validateForm()) return
+
+  setLoading(true)
+  try {
+    await signIn(email, password)
+  } catch (error: any) {
+    // ВАЖНО: Ако грешката има `message` (например от Firebase), ще я покажем
+    setError(error.message || "Неуспешен опит за вход. Опитайте отново.")
+  } finally {
+    setLoading(false)
   }
+}
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault()

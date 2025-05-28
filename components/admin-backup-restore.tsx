@@ -17,15 +17,15 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 
 const COLLECTIONS = [
-    { id: "all", name: "All Collections" },
-    { id: "categories", name: "Categories" },
-    { id: "brands", name: "Brands" },
-    { id: "conditions", name: "Conditions" },
-    { id: "storageOptions", name: "Storage Options" },
-    { id: "carriers", name: "Carriers" },
-    { id: "colors", name: "Colors" },
-    { id: "products", name: "Products" },
-    { id: "orders", name: "Orders" },
+    { id: "all", name: "Всички колекции" },
+    { id: "categories", name: "Категории" },
+    { id: "brands", name: "Марки" },
+    { id: "conditions", name: "Състояния" },
+    { id: "storageOptions", name: "Опции за памет" },
+    { id: "carriers", name: "Оператори" },
+    { id: "colors", name: "Цветове" },
+    { id: "products", name: "Продукти" },
+    { id: "orders", name: "Поръчки" },
 ]
 
 export default function AdminBackupRestore() {
@@ -38,7 +38,6 @@ export default function AdminBackupRestore() {
     const [replaceExisting, setReplaceExisting] = useState(false)
     const [preserveIds, setPreserveIds] = useState(true)
 
-    // Export data
     const handleExport = async () => {
         try {
             setLoading(true)
@@ -52,26 +51,18 @@ export default function AdminBackupRestore() {
             let processedCollections = 0
 
             for (const collectionId of collectionsToExport) {
-                // Skip if collection is "all"
-                if (collectionId === "all") continue
-
-                const collectionRef = collection(db, collectionId)
-                const snapshot = await getDocs(collectionRef)
-
+                const snapshot = await getDocs(collection(db, collectionId))
                 exportData[collectionId] = snapshot.docs.map((doc) => ({
                     id: doc.id,
                     ...doc.data(),
                 }))
-
                 processedCollections++
                 setProgress(Math.round((processedCollections / collectionsToExport.length) * 100))
             }
 
-            // Convert timestamps to ISO strings for JSON serialization
             const processedData = JSON.stringify(
                 exportData,
                 (key, value) => {
-                    // Check if the value is a Firebase timestamp
                     if (value && typeof value === "object" && value.seconds !== undefined && value.nanoseconds !== undefined) {
                         return new Date(value.seconds * 1000).toISOString()
                     }
@@ -80,7 +71,6 @@ export default function AdminBackupRestore() {
                 2,
             )
 
-            // Create a blob and download link
             const blob = new Blob([processedData], { type: "application/json" })
             const url = URL.createObjectURL(blob)
             const link = document.createElement("a")
@@ -90,24 +80,19 @@ export default function AdminBackupRestore() {
             link.click()
             document.body.removeChild(link)
 
-            setResult({
-                success: true,
-                message: `Successfully exported ${selectedCollection === "all" ? "all collections" : selectedCollection}.`,
-            })
+            setResult({ success: true, message: `Успешно експортиране на ${selectedCollection === "all" ? "всички колекции" : selectedCollection}.` })
 
             toast({
-                title: "Export Successful",
-                description: `Data has been exported to a JSON file.`,
+                title: "Успешен експорт",
+                description: "Данните са експортирани в JSON файл.",
             })
         } catch (error) {
-            console.error("Error exporting data:", error)
-            setResult({
-                success: false,
-                message: `Failed to export data: ${error instanceof Error ? error.message : String(error)}`,
-            })
+            console.error("Грешка при експортиране:", error)
+            setResult({ success: false, message: `Неуспешен експорт: ${error instanceof Error ? error.message : String(error)}` })
+
             toast({
-                title: "Export Failed",
-                description: "There was an error exporting the data. Please try again.",
+                title: "Грешка при експортиране",
+                description: "Възникна грешка при експортирането. Опитайте отново.",
                 variant: "destructive",
             })
         } finally {
@@ -116,7 +101,6 @@ export default function AdminBackupRestore() {
         }
     }
 
-    // Import data
     const handleImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0]
         if (!file) return
@@ -126,13 +110,11 @@ export default function AdminBackupRestore() {
             setProgress(0)
             setResult(null)
 
-            // Read the file
             const fileContent = await file.text()
             const importData = JSON.parse(fileContent)
 
-            // Validate the data
             if (typeof importData !== "object") {
-                throw new Error("Invalid import file format. Expected a JSON object.")
+                throw new Error("Невалиден формат на файла.")
             }
 
             const collectionsToImport = selectedCollection === "all" ? Object.keys(importData) : [selectedCollection]
@@ -140,55 +122,41 @@ export default function AdminBackupRestore() {
             let totalItems = 0
             let processedItems = 0
 
-            // Count total items for progress tracking
             for (const collectionId of collectionsToImport) {
-                if (importData[collectionId] && Array.isArray(importData[collectionId])) {
+                if (Array.isArray(importData[collectionId])) {
                     totalItems += importData[collectionId].length
                 }
             }
 
-            // Process each collection
             for (const collectionId of collectionsToImport) {
-                // Skip if collection doesn't exist in import data
-                if (!importData[collectionId] || !Array.isArray(importData[collectionId])) continue
+                if (!Array.isArray(importData[collectionId])) continue
 
                 const items = importData[collectionId]
 
-                // If replacing existing data, delete all documents in the collection first
                 if (replaceExisting) {
-                    const collectionRef = collection(db, collectionId)
-                    const snapshot = await getDocs(collectionRef)
-
-                    // Use batched writes for better performance
+                    const snapshot = await getDocs(collection(db, collectionId))
                     const batchSize = 500
                     let batch = writeBatch(db)
-                    let operationCount = 0
+                    let count = 0
 
                     for (const doc of snapshot.docs) {
                         batch.delete(doc.ref)
-                        operationCount++
-
-                        if (operationCount >= batchSize) {
+                        count++
+                        if (count >= batchSize) {
                             await batch.commit()
                             batch = writeBatch(db)
-                            operationCount = 0
+                            count = 0
                         }
                     }
 
-                    if (operationCount > 0) {
-                        await batch.commit()
-                    }
+                    if (count > 0) await batch.commit()
                 }
 
-                // Add or update documents
                 for (const item of items) {
                     const { id, ...data } = item
-
                     if (preserveIds && id) {
-                        // Use the original ID
                         await setDoc(doc(db, collectionId, id), data)
                     } else {
-                        // Generate a new ID
                         await addDoc(collection(db, collectionId), data)
                     }
 
@@ -197,31 +165,24 @@ export default function AdminBackupRestore() {
                 }
             }
 
-            setResult({
-                success: true,
-                message: `Successfully imported ${processedItems} items into ${selectedCollection === "all" ? "all collections" : selectedCollection}.`,
-            })
+            setResult({ success: true, message: `Успешен импорт на ${processedItems} елемента.` })
 
             toast({
-                title: "Import Successful",
-                description: `${processedItems} items have been imported.`,
+                title: "Успешен импорт",
+                description: `${processedItems} елемента са импортирани успешно.`,
             })
 
-            // Reset the file input
             event.target.value = ""
         } catch (error) {
-            console.error("Error importing data:", error)
-            setResult({
-                success: false,
-                message: `Failed to import data: ${error instanceof Error ? error.message : String(error)}`,
-            })
+            console.error("Грешка при импортиране:", error)
+            setResult({ success: false, message: `Неуспешен импорт: ${error instanceof Error ? error.message : String(error)}` })
+
             toast({
-                title: "Import Failed",
-                description: "There was an error importing the data. Please check the file format and try again.",
+                title: "Грешка при импортиране",
+                description: "Проблем с файла. Проверете формата и опитайте отново.",
                 variant: "destructive",
             })
 
-            // Reset the file input
             event.target.value = ""
         } finally {
             setLoading(false)
@@ -233,15 +194,15 @@ export default function AdminBackupRestore() {
         <div className="space-y-6">
             <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <TabsList>
-                    <TabsTrigger value="export">Export Data</TabsTrigger>
-                    <TabsTrigger value="import">Import Data</TabsTrigger>
+                    <TabsTrigger value="export">Експортиране</TabsTrigger>
+                    <TabsTrigger value="import">Импортиране</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="export" className="space-y-6 pt-4">
                     <div className="flex items-center space-x-4">
                         <Select value={selectedCollection} onValueChange={setSelectedCollection}>
                             <SelectTrigger className="w-[250px]">
-                                <SelectValue placeholder="Select collection" />
+                                <SelectValue placeholder="Изберете колекция" />
                             </SelectTrigger>
                             <SelectContent>
                                 {COLLECTIONS.map((collection) => (
@@ -254,37 +215,33 @@ export default function AdminBackupRestore() {
 
                         <Button onClick={handleExport} disabled={loading}>
                             {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
-                            Export{" "}
-                            {selectedCollection === "all" ? "All Data" : COLLECTIONS.find((c) => c.id === selectedCollection)?.name}
+                            Експортирай {selectedCollection === "all" ? "всички данни" : COLLECTIONS.find((c) => c.id === selectedCollection)?.name}
                         </Button>
                     </div>
 
                     {loading && (
                         <div className="space-y-2">
                             <Progress value={progress} />
-                            <p className="text-sm text-muted-foreground text-center">Exporting data... {progress}%</p>
+                            <p className="text-sm text-muted-foreground text-center">Експортиране... {progress}%</p>
                         </div>
                     )}
 
                     {result && (
                         <Alert variant={result.success ? "default" : "destructive"}>
                             {result.success ? <CheckCircle2 className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
-                            <AlertTitle>{result.success ? "Export Successful" : "Export Failed"}</AlertTitle>
+                            <AlertTitle>{result.success ? "Успех" : "Грешка"}</AlertTitle>
                             <AlertDescription>{result.message}</AlertDescription>
                         </Alert>
                     )}
 
                     <Card>
                         <CardContent className="pt-6">
-                            <h3 className="text-lg font-medium mb-2">Export Instructions</h3>
-                            <p className="text-sm text-muted-foreground mb-4">
-                                Export your database data to a JSON file for backup or migration purposes.
-                            </p>
-                            <ul className="list-disc pl-5 space-y-2 text-sm">
-                                <li>Select a specific collection or "All Collections" to export</li>
-                                <li>Click the Export button to download a JSON file</li>
-                                <li>The exported file will include all documents in the selected collection(s)</li>
-                                <li>Timestamps will be converted to ISO date strings for compatibility</li>
+                            <h3 className="text-lg font-medium mb-2">Инструкции за експортиране</h3>
+                            <ul className="list-disc pl-5 space-y-2 text-sm text-muted-foreground">
+                                <li>Изберете конкретна колекция или "Всички колекции"</li>
+                                <li>Натиснете "Експортирай", за да изтеглите JSON файл</li>
+                                <li>Файлът ще съдържа всички документи от избраните колекции</li>
+                                <li>Датите ще бъдат в ISO формат за съвместимост</li>
                             </ul>
                         </CardContent>
                     </Card>
@@ -294,7 +251,7 @@ export default function AdminBackupRestore() {
                     <div className="flex items-center space-x-4">
                         <Select value={selectedCollection} onValueChange={setSelectedCollection}>
                             <SelectTrigger className="w-[250px]">
-                                <SelectValue placeholder="Select collection" />
+                                <SelectValue placeholder="Изберете колекция" />
                             </SelectTrigger>
                             <SelectContent>
                                 {COLLECTIONS.map((collection) => (
@@ -315,8 +272,7 @@ export default function AdminBackupRestore() {
                             />
                             <Button disabled={loading}>
                                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Upload className="mr-2 h-4 w-4" />}
-                                Import{" "}
-                                {selectedCollection === "all" ? "All Data" : COLLECTIONS.find((c) => c.id === selectedCollection)?.name}
+                                Импортирай {selectedCollection === "all" ? "всички данни" : COLLECTIONS.find((c) => c.id === selectedCollection)?.name}
                             </Button>
                         </div>
                     </div>
@@ -324,40 +280,39 @@ export default function AdminBackupRestore() {
                     <div className="flex items-center space-x-8">
                         <div className="flex items-center space-x-2">
                             <Switch id="replace-existing" checked={replaceExisting} onCheckedChange={setReplaceExisting} />
-                            <Label htmlFor="replace-existing">Replace existing data</Label>
+                            <Label htmlFor="replace-existing">Замени съществуващите данни</Label>
                         </div>
 
                         <div className="flex items-center space-x-2">
                             <Switch id="preserve-ids" checked={preserveIds} onCheckedChange={setPreserveIds} />
-                            <Label htmlFor="preserve-ids">Preserve document IDs</Label>
+                            <Label htmlFor="preserve-ids">Запази ID-тата</Label>
                         </div>
                     </div>
 
                     {loading && (
                         <div className="space-y-2">
                             <Progress value={progress} />
-                            <p className="text-sm text-muted-foreground text-center">Importing data... {progress}%</p>
+                            <p className="text-sm text-muted-foreground text-center">Импортиране... {progress}%</p>
                         </div>
                     )}
 
                     {result && (
                         <Alert variant={result.success ? "default" : "destructive"}>
                             {result.success ? <CheckCircle2 className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
-                            <AlertTitle>{result.success ? "Import Successful" : "Import Failed"}</AlertTitle>
+                            <AlertTitle>{result.success ? "Успех" : "Грешка"}</AlertTitle>
                             <AlertDescription>{result.message}</AlertDescription>
                         </Alert>
                     )}
 
                     <Card>
                         <CardContent className="pt-6">
-                            <h3 className="text-lg font-medium mb-2">Import Instructions</h3>
-                            <p className="text-sm text-muted-foreground mb-4">Import data from a JSON file into your database.</p>
-                            <ul className="list-disc pl-5 space-y-2 text-sm">
-                                <li>Select a specific collection or "All Collections" to import</li>
-                                <li>Choose whether to replace existing data or merge with it</li>
-                                <li>Choose whether to preserve document IDs from the import file</li>
-                                <li>Select a JSON file that was previously exported from this system</li>
-                                <li>The file format should match the export format (collection name → array of documents)</li>
+                            <h3 className="text-lg font-medium mb-2">Инструкции за импортиране</h3>
+                            <ul className="list-disc pl-5 space-y-2 text-sm text-muted-foreground">
+                                <li>Изберете колекция или "Всички колекции"</li>
+                                <li>Изберете дали да замените съществуващи данни</li>
+                                <li>Изберете дали да запазите ID-тата</li>
+                                <li>Изберете JSON файл, експортиран от тази система</li>
+                                <li>Форматът трябва да е валиден (име на колекция → масив от обекти)</li>
                             </ul>
                         </CardContent>
                     </Card>
